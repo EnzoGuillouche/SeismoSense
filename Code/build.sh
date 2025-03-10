@@ -1,6 +1,8 @@
 DIR="Bin"
 PROGRAM="seismoSense"
 
+clear
+
 # Check if GLFW is installed
 if ! brew list --formula | grep -q "^glfw$"; then
     echo "GLFW not found. Installing..."
@@ -19,7 +21,7 @@ else
 fi
 
 # Compilation command
-g++ -o $DIR/$PROGRAM main.cpp -lglfw -framework OpenGL
+g++ -std=c++17 -o $DIR/$PROGRAM main.cpp -framework OpenGL -lglfw
 
 echo "Compilation done."
 echo "Opening $PROGRAM program..."
