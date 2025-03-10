@@ -21,7 +21,7 @@ else
 fi
 
 # Compilation command
-g++ -std=c++17 -o $DIR/$PROGRAM main.cpp shader.cpp input.cpp render.cpp -framework OpenGL -lglfw
+g++ -std=c++17 -o $DIR/$PROGRAM main.cpp -framework OpenGL -lglfw
 
 echo "Compilation done."
 echo "Opening $PROGRAM program..."
