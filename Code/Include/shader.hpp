@@ -4,19 +4,26 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\n\0";
+const char* readShaderFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return nullptr;
+    }
+
+    std::stringstream buffer;
+    buffer << file.rdbuf();  // Read file content into buffer
+
+    std::string content = buffer.str();
+    char* shaderSource = new char[content.length() + 1];
+    std::copy(content.begin(), content.end(), shaderSource);
+    shaderSource[content.length()] = '\0';  // Null-terminate
+
+    return shaderSource;
+}
 
 // set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
@@ -34,6 +41,10 @@ unsigned int indices[] = {  // note that we start from 0!
 unsigned int VBO, VAO, EBO;
 
 unsigned int buildShaders() {
+
+    const char *vertexShaderSource = readShaderFile("Shaders/shader.vert");
+    const char *fragmentShaderSource = readShaderFile("Shaders/shader.frag");
+
     // build and compile our shader program
     // ------------------------------------
     // vertex shader
