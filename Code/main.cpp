@@ -84,7 +84,7 @@ int main()
 
         // render
         // ------
-        render(window, shaderProgram);
+        render(window, shaderProgram, 1.0f, 0.0f, 0.0f);
     }
 
     // optional: de-allocate all resources once they've outlived their purpose:
