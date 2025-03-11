@@ -1,101 +1,79 @@
-#define GL_SILENCE_DEPRECATION
-#include <OpenGL/gl3.h>
-#include <GLFW/glfw3.h>
+#include <GL/glut.h>  // OpenGL (GLUT)
+#include <btBulletDynamicsCommon.h>  // Bullet Physics
 
-#include "Include/input.hpp"
-#include "Include/shader.hpp"
-#include "Include/render.hpp"
+// Bullet physics world
+btDiscreteDynamicsWorld* dynamicsWorld;
+btRigidBody* boxBody;
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+// OpenGL display function
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+    // Get Bullet physics transformation
+    btTransform transform;
+    boxBody->getMotionState()->getWorldTransform(transform);
+    
+    // Extract position
+    btScalar matrix[16];
+    transform.getOpenGLMatrix(matrix);
+
+    // Render box
+    glPushMatrix();
+    glMultMatrixf(matrix);  // Apply physics transformation
+    glutSolidCube(1.0);  // Render a 1x1x1 cube
+    glPopMatrix();
+
+    glutSwapBuffers();
 }
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+// Bullet physics update function
+void update(int value) {
+    dynamicsWorld->stepSimulation(1.0f / 60.0f);  // Advance physics simulation
+    glutPostRedisplay();  // Redraw scene
+    glutTimerFunc(16, update, 0);
+}
 
-int main()
-{
-    // glfw: initialize and configure
-    // ------------------------------
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+// Initialization
+void init() {
+    glEnable(GL_DEPTH_TEST);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    // Bullet physics setup
+    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+    btDefaultCollisionConfiguration* collisionConfig = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfig);
+    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
+    
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
+    dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));  // Gravity
 
-    // glfw window creation
-    // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    // Create box shape
+    btCollisionShape* boxShape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
 
-    // OpenGL functions are automatically loaded by macOS, no need for glad
+    // Set up box motion state
+    btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2, 0)));
+    btScalar mass = 1.0f;
+    btVector3 inertia(0, 0, 0);
+    boxShape->calculateLocalInertia(mass, inertia);
 
-    unsigned int shaderProgram = buildShaders();
+    // Create rigid body
+    btRigidBody::btRigidBodyConstructionInfo boxInfo(mass, boxMotionState, boxShape, inertia);
+    boxBody = new btRigidBody(boxInfo);
+    dynamicsWorld->addRigidBody(boxBody);
+}
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
+// Main function
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("SeismoSense");
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    init();
+    
+    glutDisplayFunc(display);
+    glutTimerFunc(16, update, 0);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0); 
-
-
-    // uncomment this call to draw in wireframe polygons.
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    // render loop
-    // -----------
-    while (!glfwWindowShouldClose(window))
-    {
-        // input
-        // -----
-        processInput(window, vertices);
-
-        // render
-        // ------
-        render(window, shaderProgram, 1.0f, 0.0f, 0.0f);
-    }
-
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
-
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
-    glfwTerminate();
+    glutMainLoop();
     return 0;
 }
