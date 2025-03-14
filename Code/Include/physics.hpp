@@ -6,7 +6,6 @@ btRigidBody* boxBody;
 
 // Initialization
 void init() {
-
     // Bullet physics setup
     btBroadphaseInterface* broadphase = new btDbvtBroadphase();
     btDefaultCollisionConfiguration* collisionConfig = new btDefaultCollisionConfiguration();
