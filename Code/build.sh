@@ -1,5 +1,5 @@
 DIR="Bin"
-PROGRAM="seismoSense"
+PROGRAM="SeismoSense"
 
 clear
 
