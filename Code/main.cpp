@@ -1,30 +1,32 @@
-#include "Include/input.hpp"
+#include <vector>
+#include "Include/Meshes/Meshes.h"
+#include "Include/Camera/CameraPerspectiveDemo.hpp"
 
-// Bullet physics update function
-void update(int value) {
-    dynamicsWorld->stepSimulation(1.0f / 60.0f);  // Advance physics simulation
-    glutPostRedisplay();  // Redraw scene
-    glutTimerFunc(16, update, 0);
+using namespace std;
+
+int runCameraPerspectiveDemo(const char* window_name) {
+    
+    CameraPerspectiveDemo *demo = new CameraPerspectiveDemo();
+    
+    /**
+     *  Generating a cube mesh and adding it to the world:
+     *  
+     *  - The first parameter is the generated mesh
+     *  - The second parameter is the world position
+     *  - The third parameter is the world rotation
+     */
+    
+    Mesh mesh;
+    mesh.generateCube(2.0f);
+    demo->addMesh(mesh, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f});
+    
+    int run = demo->run(window_name);
+    delete(demo);
+    return run;
 }
 
-
-
-// Main function
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(800, 600);
-    glutCreateWindow("SeismoSense");
-    // glutFullScreen();
-
-    glEnable(GL_DEPTH_TEST);
-    init();
+int main(int argc, const char * argv[]) {
+    int run = runCameraPerspectiveDemo("SeismoSense");
     
-    glutDisplayFunc(display);
-    glutKeyboardFunc(processInput);
-    glutSpecialFunc(processSpecialInput);
-    glutTimerFunc(16, update, 0);
-
-    glutMainLoop();
     return 0;
 }

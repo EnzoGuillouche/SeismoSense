@@ -4,17 +4,18 @@ PROGRAM="SeismoSense"
 clear
 
 # Check if Bullet is installed
-if ! brew list --formula | grep -q "^bullet$"; then
-    echo "Bullet engine not found. Installing..."
-    brew install bullet
-    clear
-else
-    echo "Bullet engine is already installed."
-fi
-# Check if freeglut is installed
-if ! brew list --formula | grep -q "^freeglut$"; then
-    echo "OpenGL Tools not found. Installing..."
-    brew install freeglut
+# if ! brew list --formula | grep -q "^bullet$"; then
+#     echo "Bullet engine not found. Installing..."
+#     brew install bullet
+#     clear
+# else
+#     echo "Bullet engine is already installed."
+# fi
+
+# Check if GLFW is installed
+if ! brew list --formula | grep -q "^glfw$"; then
+    echo "OpenGL Tools (GLFW) not found. Installing..."
+    brew install glfw
     clear
 else
     echo "OpenGL Tools are already installed."
@@ -29,13 +30,12 @@ else
 fi
 
 # Compilation command
-g++ -std=c++17 -o $DIR/$PROGRAM main.cpp -I/opt/homebrew/include/bullet -L/opt/homebrew/lib -framework OpenGL -framework GLUT -lBulletDynamics -lBulletCollision -lLinearMath
+echo "Compiling..."
+# g++ -std=c++17 -o $DIR/$PROGRAM main.cpp -I/opt/homebrew/include/bullet -L/opt/homebrew/lib -framework OpenGL -framework GLUT -lBulletDynamics -lBulletCollision -lLinearMath
+g++ -std=c++17 -w -o $DIR/$PROGRAM main.cpp Include/Camera/CameraPerspectiveDemo.cpp Include/Meshes/Mesh.cpp Params/GLParams.cpp Include/Input/Input.cpp Params/Logger.cpp Include/Meshes/Matrices.cpp Shaders/ShaderLoader.cpp -lglfw -framework OpenGL
 
 echo "Compilation done."
-echo "Opening $PROGRAM program..."
 
 # Execute binaries
+echo "Opening $PROGRAM program..."
 ./$DIR/$PROGRAM
-
-# Make sure the build finished normally
-echo "Program $PROGRAM terminated without building issues."
