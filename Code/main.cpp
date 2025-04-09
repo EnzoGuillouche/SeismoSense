@@ -1,5 +1,4 @@
 #define GL_SILENCE_DEPRECATION
-#include <OpenGL/gl3.h>
 #include <GLFW/glfw3.h>
 
 #include "Include/input.hpp"
@@ -70,32 +69,21 @@ int main()
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
 
-
-    // uncomment this call to draw in wireframe polygons.
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // draw in wireframe polygons
 
     // render loop
-    // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // input
-        // -----
-        processInput(window, vertices);
+        processInput(window, vertices); // input
 
-        // render
-        // ------
-        render(window, shaderProgram, 1.0f, 0.0f, 0.0f);
+        render(window, shaderProgram, 1.0f, 0.0f, 0.0f); // render
     }
 
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
-
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
+    
     glfwTerminate();
     return 0;
 }
