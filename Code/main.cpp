@@ -1,12 +1,24 @@
 #define GL_SILENCE_DEPRECATION
+#include <OpenGL/gl3.h>
 #include <GLFW/glfw3.h>
+#include <optional>
 
 #include "Include/input.hpp"
 #include "Include/shader.hpp"
 #include "Include/render.hpp"
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+void terminateProgram(std::optional<std::string> message, int EXIT_CODE)
+{
+    if (message) std::cout << *message << std::endl;
+
+    glfwTerminate();
+    exit(EXIT_CODE);
+}
+
+// Whenever the window size changed (by OS or user resize) this callback function executes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
@@ -14,39 +26,29 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-int main()
+void initWindow(GLFWwindow*& window)
 {
-    // glfw: initialize and configure
-    // ------------------------------
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    #ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
 
     // glfw window creation
-    // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "SeismoSense", NULL, NULL);
     if (window == NULL)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
+        terminateProgram("Failed to create GLFW window", EXIT_FAILURE);
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+}
 
-    // OpenGL functions are automatically loaded by macOS, no need for glad
-
-    unsigned int shaderProgram = buildShaders();
-
+void initShaders()
+{
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -70,13 +72,23 @@ int main()
     glBindVertexArray(0); 
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // draw in wireframe polygons
+}
+
+int main()
+{
+    GLFWwindow* window = nullptr;
+    initWindow(window);
+
+    unsigned int shaderProgram = buildShaders();
+
+    initShaders();
 
     // render loop
     while (!glfwWindowShouldClose(window))
     {
         processInput(window, vertices); // input
 
-        render(window, shaderProgram, 1.0f, 0.0f, 0.0f); // render
+        render(window, shaderProgram, 2, 1.0f, 0.0f, 0.0f); // render
     }
 
     glDeleteVertexArrays(1, &VAO);
@@ -84,6 +96,5 @@ int main()
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
     
-    glfwTerminate();
-    return 0;
+    terminateProgram(std::nullopt, EXIT_SUCCESS);
 }

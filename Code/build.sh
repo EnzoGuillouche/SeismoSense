@@ -28,6 +28,3 @@ echo "Opening $PROGRAM program..."
 
 # Execute binaries
 ./$DIR/$PROGRAM
-
-# Make sure the build finished normally
-echo "Program $PROGRAM terminated without building issues."

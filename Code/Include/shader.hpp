@@ -1,5 +1,4 @@
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#pragma once
 
 #include <GLFW/glfw3.h>
 
@@ -7,6 +6,13 @@
 #include <fstream>
 #include <sstream>
 
+/**
+    * Reads the content of a shader file and returns it as a null-terminated C-string.
+    * The returned memory is dynamically allocated and should be freed manually.
+    *
+    * @param filename Path to the shader file.
+    * @return Pointer to the shader source as a C-string, or nullptr if the file couldn't be opened.
+    */
 const char* readShaderFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file) {
@@ -15,77 +21,92 @@ const char* readShaderFile(const std::string& filename) {
     }
 
     std::stringstream buffer;
-    buffer << file.rdbuf();  // Read file content into buffer
+    buffer << file.rdbuf();  // Read entire file content into buffer
 
     std::string content = buffer.str();
     char* shaderSource = new char[content.length() + 1];
     std::copy(content.begin(), content.end(), shaderSource);
-    shaderSource[content.length()] = '\0';  // Null-terminate
+    shaderSource[content.length()] = '\0';  // Null-terminate the string
 
     return shaderSource;
 }
 
-// set up vertex data (and buffer(s)) and configure vertex attributes
-// ------------------------------------------------------------------
+// Vertex data defining a rectangle composed of two triangles
+// Each vertex consists of 3 floats: x, y, z
 float vertices[] = {
-    0.5f,  0.5f, 0.0f,  // top right
-    0.5f, -0.5f, 0.0f,  // bottom right
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
     -0.5f, -0.5f, 0.0f,  // bottom left
     -0.5f,  0.5f, 0.0f   // top left 
 };
-unsigned int indices[] = {  // note that we start from 0!
-    0, 1, 3,  // first Triangle
-    1, 2, 3   // second Triangle
+
+// Indices specifying two triangles from the above vertices
+unsigned int indices[] = {
+    0, 1, 3,  // First triangle: top-right, bottom-right, top-left
+    1, 2, 3   // Second triangle: bottom-right, bottom-left, top-left
 };
 
+// OpenGL buffer object handles
 unsigned int VBO, VAO, EBO;
 
+/**
+    * @brief Builds and compiles the vertex and fragment shaders, then links them into a shader program.
+    * 
+    * @return GLuint identifier of the created shader program.
+    */
 unsigned int buildShaders() {
+    // Load shader source code from files
+    const char* vertexShaderSource   = readShaderFile("Shaders/shader.vert");
+    const char* fragmentShaderSource = readShaderFile("Shaders/shader.frag");
 
-    const char *vertexShaderSource = readShaderFile("Shaders/shader.vert");
-    const char *fragmentShaderSource = readShaderFile("Shaders/shader.frag");
+    // -----------------------------
+    // Vertex Shader Compilation
+    // -----------------------------
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);                     // Create shader object
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);                       // Attach source
+    glCompileShader(vertexShader);                                                    // Compile shader
 
-    // build and compile our shader program
-    // ------------------------------------
-    // vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // check for shader compile errors
+    // Check for compilation errors
     int success;
     char infoLog[512];
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
+    if (!success) {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-    // fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    // check for shader compile errors
+
+    // -----------------------------
+    // Fragment Shader Compilation
+    // -----------------------------
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);                 // Create shader object
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);                   // Attach source
+    glCompileShader(fragmentShader);                                                  // Compile shader
+
+    // Check for compilation errors
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
+    if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-    // link shaders
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    // check for linking errors
+
+    // -----------------------------
+    // Shader Program Linking
+    // -----------------------------
+    unsigned int shaderProgram = glCreateProgram();                                   // Create program
+    glAttachShader(shaderProgram, vertexShader);                                      // Attach compiled vertex shader
+    glAttachShader(shaderProgram, fragmentShader);                                    // Attach compiled fragment shader
+    glLinkProgram(shaderProgram);                                                     // Link both shaders into final program
+
+    // Check for linking errors
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
+
+    // Clean up the shaders as they're now linked into the program
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
     return shaderProgram;
 }
-
-#endif
