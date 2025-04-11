@@ -7,7 +7,7 @@ Shape::Shape(int shapeId)
     {
     case 0:
         std::cout << "Square." << std::endl;
-        
+
         this->shapesTriangles = 2;
 
         this->vertices = {
@@ -32,6 +32,12 @@ Shape::Shape(int shapeId)
     };
 }
 
+Shape::~Shape()
+{
+    vertices.clear();
+    indices.clear();
+}
+
 std::vector<float> Shape::getVertices() const
 {
     return this->vertices;
@@ -52,8 +58,7 @@ std::vector<float> Shape::getColors() const
     return this->colors;
 }
 
-Shape::~Shape()
+void Shape::updateVertices(int index, float changeAmount) 
 {
-    vertices.clear();
-    indices.clear();
+    this->vertices[index] += changeAmount;
 }

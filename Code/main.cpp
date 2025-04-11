@@ -100,7 +100,7 @@ int main()
     std::cout << "Render loop" << std::endl;
     while (!glfwWindowShouldClose(window))
     {
-        // processInput(window); // input
+        processInput(window, square); // input
 
         render(window, shaderProgram, *square); // render
     }

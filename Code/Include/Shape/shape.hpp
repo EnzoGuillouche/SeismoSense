@@ -19,11 +19,14 @@ private:
     std::vector<float> colors;
 public:
     Shape(int shapeId);
+    ~Shape();
+
     std::vector<float> getVertices() const;
     int getShapesTriangles() const;
     std::vector<unsigned int> getIndices() const;
     std::vector<float> getColors() const;
-    ~Shape();
+
+    void updateVertices(int index, float changeAmount);
 };
 
 
