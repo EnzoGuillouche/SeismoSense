@@ -1,19 +1,24 @@
 #define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
 #include <GLFW/glfw3.h>
+
 #include <optional>
+#include <vector>
+#include <iostream>
 
 #include "Include/input.hpp"
 #include "Include/shader.hpp"
+#include "Include/Shape/shape.hpp"
 #include "Include/render.hpp"
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-void terminateProgram(std::optional<std::string> message, int EXIT_CODE)
+void terminateProgram(std::optional<std::string> message, std::optional<std::vector<Shape*>> shapes, int EXIT_CODE)
 {
     if (message) std::cout << *message << std::endl;
 
+    shapes.reset();
     glfwTerminate();
     exit(EXIT_CODE);
 }
@@ -28,6 +33,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void initWindow(GLFWwindow*& window)
 {
+    std::cout << "Initializing the window..." << std::endl;
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -41,14 +48,16 @@ void initWindow(GLFWwindow*& window)
     window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "SeismoSense", NULL, NULL);
     if (window == NULL)
     {
-        terminateProgram("Failed to create GLFW window", EXIT_FAILURE);
+        terminateProgram("Failed to create GLFW window", std::nullopt, EXIT_FAILURE);
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 }
 
-void initShaders()
+void initShaders(Shape& shape)
 {
+    std::cout << "Initializing the shaders..." << std::endl;
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -56,10 +65,10 @@ void initShaders()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * shape.getVertices().size(), shape.getVertices().data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * shape.getIndices().size(), shape.getIndices().data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -81,14 +90,19 @@ int main()
 
     unsigned int shaderProgram = buildShaders();
 
-    initShaders();
+    Shape* square = new Shape(0);
+    std::vector<Shape*> shapes;
+    shapes.push_back(square);
+
+    initShaders(*square);
 
     // render loop
+    std::cout << "Render loop" << std::endl;
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, vertices); // input
+        // processInput(window); // input
 
-        render(window, shaderProgram, 2, 1.0f, 0.0f, 0.0f); // render
+        render(window, shaderProgram, *square); // render
     }
 
     glDeleteVertexArrays(1, &VAO);
@@ -96,5 +110,5 @@ int main()
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
     
-    terminateProgram(std::nullopt, EXIT_SUCCESS);
+    terminateProgram(std::nullopt, shapes, EXIT_SUCCESS);
 }

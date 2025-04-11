@@ -31,21 +31,6 @@ const char* readShaderFile(const std::string& filename) {
     return shaderSource;
 }
 
-// Vertex data defining a rectangle composed of two triangles
-// Each vertex consists of 3 floats: x, y, z
-float vertices[] = {
-     0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left 
-};
-
-// Indices specifying two triangles from the above vertices
-unsigned int indices[] = {
-    0, 1, 3,  // First triangle: top-right, bottom-right, top-left
-    1, 2, 3   // Second triangle: bottom-right, bottom-left, top-left
-};
-
 // OpenGL buffer object handles
 unsigned int VBO, VAO, EBO;
 

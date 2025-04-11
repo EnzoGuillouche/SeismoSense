@@ -21,10 +21,15 @@ else
 fi
 
 # Compilation command
-g++ -std=c++17 -o $DIR/$PROGRAM main.cpp -framework OpenGL -lglfw
+g++ -std=c++17 -o $DIR/$PROGRAM main.cpp Include/Shape/shape.cpp -framework OpenGL -lglfw
 
-echo "Compilation done."
-echo "Opening $PROGRAM program..."
+# Check if the compilation was successful
+if [ $? -eq 0 ]; then
+    echo "Compilation done."
+    clear
 
-# Execute binaries
-./$DIR/$PROGRAM
+    # Execute binaries only if compilation was successful
+    ./$DIR/$PROGRAM
+else
+    echo "Compilation failed."
+fi
