@@ -15,10 +15,7 @@ constexpr float BACKGROUND_COLOR[3] = { 0.0f, 0.0f, 0.0f };
     * 
     * @param window Pointer to the GLFW window used for rendering.
     * @param shaderProgram OpenGL shader program ID used to render the shape.
-    * @param shapesTriangles Number of indices to draw (e.g., 6 for two triangles forming a quad).
-    * @param redValue Red channel value for the shape color (0.0f to 1.0f).
-    * @param greenValue Green channel value for the shape color (0.0f to 1.0f).
-    * @param blueValue Blue channel value for the shape color (0.0f to 1.0f).
+    * @param shape Shape object containing the vertex and color data for rendering.
     */
 void render(GLFWwindow* window, unsigned int shaderProgram, const Shape& shape) {
     glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);

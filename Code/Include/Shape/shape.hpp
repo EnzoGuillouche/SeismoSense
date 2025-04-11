@@ -1,8 +1,12 @@
 #pragma once
 
-#include "iostream"
-#include "vector"
-
+/**
+    * @brief Represents a 3D shape with parameters and the ability to update those parameters.
+    * 
+    * This class stores the geometric properties of a shape, including its vertices, triangles, 
+    * and color information. It provides functions to retrieve and update these properties, 
+    * enabling dynamic manipulation of the shape.
+    */
 class Shape
 {
 private:

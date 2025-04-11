@@ -1,8 +1,23 @@
+#include "iostream"
+#include "vector"
+
 #include "shape.hpp"
 
+/**
+    * @brief Constructor to initialize a shape based on the given ID.
+    * 
+    * The constructor defines the vertices, indices, and color of the shape based on the provided shapeId.
+    * It currently supports the "Square" shape.
+    * 
+    * @param shapeId Integer representing the shape type:
+    * 
+    * - 0 = Square
+    */
 Shape::Shape(int shapeId)
 {
     std::cout << "Constructing ";
+    
+    // Switch statement to set properties based on the shapeId
     switch (shapeId)
     {
     case 0:
@@ -10,11 +25,12 @@ Shape::Shape(int shapeId)
 
         this->shapesTriangles = 2;
 
+        // Define the vertices of a square, each consisting of x, y, and z coordinates
         this->vertices = {
-            0.5f, 0.5f, 0.0f, // top right
-            0.5f, -0.5f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, // bottom left
-            -0.5f, 0.5f, 0.0f // top left 
+            0.5f, 0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f
         };
 
         this->indices = {
@@ -24,6 +40,7 @@ Shape::Shape(int shapeId)
         break;
     
     default:
+        std::cerr << "Construction shape not allowed: '" << shapeId << "' is out of shapes range." << std::endl;
         break;
     }
 
@@ -32,32 +49,65 @@ Shape::Shape(int shapeId)
     };
 }
 
+/**
+    * @brief Destructor to clean up the resources used by the Shape.
+    * 
+    */
 Shape::~Shape()
 {
     vertices.clear();
     indices.clear();
 }
 
+/**
+    * @brief Getter for the vertices of the shape.
+    * 
+    * @return A vector of floats representing the x, y, and z coordinates of each vertex in the shape.
+    */
 std::vector<float> Shape::getVertices() const
 {
     return this->vertices;
 }
 
+/**
+    * @brief Getter for the number of triangles that form the shape.
+    * 
+    * @return The number of triangles in the shape.
+    */
 int Shape::getShapesTriangles() const
 {
     return this->shapesTriangles;
 }
 
+/**
+    * @brief Getter for the indices used to define the triangles of the shape.
+    * 
+    * @return A vector of unsigned integers representing the indices of vertices used to form triangles.
+    */
 std::vector<unsigned int> Shape::getIndices() const
 {
     return this->indices;
 }
 
+/**
+    * @brief Getter for the color of the shape.
+    * 
+    * @return A vector containing the RGB color values.
+    */
 std::vector<float> Shape::getColors() const
 {
     return this->colors;
 }
 
+/**
+    * @brief Updates the vertex at the given index by adding a specified change amount.
+    * 
+    * This method allows the modification of a specific vertex's coordinate (x, y, or z) in the vertices array.
+    * The changeAmount is added to the existing value of the vertex at the specified index.
+    * 
+    * @param index The index of the vertex to update.
+    * @param changeAmount The amount to change the vertex's coordinate value.
+    */
 void Shape::updateVertices(int index, float changeAmount) 
 {
     this->vertices[index] += changeAmount;

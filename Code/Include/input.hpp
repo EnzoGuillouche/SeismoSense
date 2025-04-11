@@ -6,9 +6,10 @@
 #include "Shape/shape.hpp"
 
 /**
-    * @brief Processes keyboard input and updates the window state or vertex positions accordingly.
+    * @brief Processes keyboard input to control the movement of a shape's vertices and window state    
     * 
-    * @param window Pointer to the GLFW window being used.
+    * @param window Pointer to the GLFW window being used, which allows us to capture user input.
+    * @param shape Pointer to a Shape object whose vertices will be updated based on keyboard input.
     */
 void processInput(GLFWwindow *window, Shape* shape)
 {
