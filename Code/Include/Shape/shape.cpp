@@ -21,6 +21,22 @@ Shape::Shape(int shapeId)
     switch (shapeId)
     {
     case 0:
+        std::cout << "Triangle." << std::endl;
+
+        this->shapesTriangles = 1;
+
+        // Define the vertices of a square, each consisting of x, y, and z coordinates
+        this->vertices = {
+            0.5f, 0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+        };
+
+        this->indices = {
+            0, 1, 2,
+        };
+        break;
+    case 1:
         std::cout << "Square." << std::endl;
 
         this->shapesTriangles = 2;
@@ -40,12 +56,12 @@ Shape::Shape(int shapeId)
         break;
     
     default:
-        std::cerr << "Construction shape not allowed: '" << shapeId << "' is out of shapes range." << std::endl;
+        std::cerr << " of the shape not allowed: '" << shapeId << "' is out of shapes range." << std::endl;
         break;
     }
 
     this->colors = {
-        1.0f, 0.0f, 0.0f
+        0.0f, 1.0f, 0.0f
     };
 }
 
@@ -110,5 +126,7 @@ std::vector<float> Shape::getColors() const
     */
 void Shape::updateVertices(int index, float changeAmount) 
 {
-    this->vertices[index] += changeAmount;
+    for (int i = 0; i < this->vertices.size(); i += 3) {
+        this->vertices[i+index] += changeAmount;
+    }
 }

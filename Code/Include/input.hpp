@@ -19,23 +19,15 @@ void processInput(GLFWwindow *window, Shape* shape)
 
     // Move the shape's vertices according to the user input
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        for (int i = 0; i < 12; i += 3) {
-            shape->updateVertices(i+1, 0.02f);
-        }
+        shape->updateVertices(1, 0.02f);
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        for (int i = 0; i < 12; i += 3) {
-            shape->updateVertices(i+1, -0.02f);
-        }
+        shape->updateVertices(1, -0.02f);
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        for (int i = 0; i < 12; i += 3) {
-            shape->updateVertices(i, -0.02f);
-        }
+        shape->updateVertices(0, -0.02f);
     }
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        for (int i = 0; i < 12; i += 3) {
-            shape->updateVertices(i, 0.02f);
-        }
+        shape->updateVertices(0, 0.02f);
     }
 }
