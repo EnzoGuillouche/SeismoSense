@@ -21,16 +21,25 @@ private:
 
     // Color scheme
     std::vector<float> colors;
+
+    // Rotation parameters
+    float rotationX = 0.0f;
+    float rotationY = 0.0f;
+    float rotationZ = 0.0f;
 public:
     Shape(int shapeId);
     ~Shape();
 
-    std::vector<float> getVertices() const;
-    int getShapesTriangles() const;
-    std::vector<unsigned int> getIndices() const;
-    std::vector<float> getColors() const;
+    std::vector<float> getVertices() const { return this->vertices; };
+    int getShapesTriangles() const { return this->shapesTriangles; };
+    std::vector<unsigned int> getIndices() const { return this->indices; };
+    std::vector<float> getColors() const { return this->colors; };
+    float getRotationX() const { return this->rotationX; }
+    float getRotationY() const { return this->rotationY; }
+    float getRotationZ() const { return this->rotationZ; }
 
     void updateVertices(int index, float changeAmount);
+    void rotate(char axis, float changeAmount);
 };
 
 

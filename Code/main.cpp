@@ -11,9 +11,6 @@
 #include "Include/Shape/shape.hpp"
 #include "Include/render.hpp"
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
 void terminateProgram(std::optional<std::string> message, std::optional<std::vector<Shape*>> shapes, int EXIT_CODE)
 {
     if (message) std::cout << *message << std::endl;
@@ -58,6 +55,8 @@ void initShaders(Shape& shape)
 {
     std::cout << "Initializing the shaders..." << std::endl;
 
+    glEnable(GL_DEPTH_TEST); // for 3D rendering
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -68,7 +67,7 @@ void initShaders(Shape& shape)
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * shape.getVertices().size(), shape.getVertices().data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * shape.getIndices().size(), shape.getIndices().data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * shape.getIndices().size(), shape.getIndices().data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -90,14 +89,15 @@ int main()
 
     unsigned int shaderProgram = buildShaders();
 
-    Shape* square = new Shape(0);
+    Shape* square = new Shape(1);
     std::vector<Shape*> shapes;
     shapes.push_back(square);
 
     initShaders(*square);
 
+    std::cout << "Initialization complete." << std::endl;
+
     // render loop
-    std::cout << "Render loop" << std::endl;
     while (!glfwWindowShouldClose(window))
     {
         processInput(window, square); // input

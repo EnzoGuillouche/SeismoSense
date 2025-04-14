@@ -13,21 +13,36 @@
     */
 void processInput(GLFWwindow *window, Shape* shape)
 {
-    // Close the window if the ESC key is pressed
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    // Move the shape's vertices according to the user input
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+    // Zoom / Unzoom on shape 
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        shape->updateVertices(2, 0.02f);
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        shape->updateVertices(2, -0.02f);
+
+    // Shape movement
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         shape->updateVertices(1, 0.02f);
-    }
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         shape->updateVertices(1, -0.02f);
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         shape->updateVertices(0, -0.02f);
-    }
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         shape->updateVertices(0, 0.02f);
-    }
+        
+    // Shape Rotation
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        shape->rotate('x', -1.0f);
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        shape->rotate('x', 1.0f);
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        shape->rotate('y', -1.0f);
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        shape->rotate('y', 1.0f);
+    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+        shape->rotate('z', -1.0f);
+    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+        shape->rotate('z', 1.0f);
 }
