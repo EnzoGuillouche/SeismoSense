@@ -12,6 +12,15 @@ else
     echo "GLFW is already installed."
 fi
 
+# Check if GLM is installed
+if ! brew list --formula | grep -q "^glm$"; then
+    echo "GLM not found. Installing..."
+    brew install glm
+    clear
+else
+    echo "GLM is already installed."
+fi
+
 # Make sure a `Bin` folder exists to contain the binaries
 if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
@@ -21,13 +30,17 @@ else
 fi
 
 # Compilation command
-g++ -std=c++17 -o $DIR/$PROGRAM main.cpp -framework OpenGL -lglfw
+echo "Compiling the program..."
+g++ -std=c++17 -o $DIR/$PROGRAM main.cpp Include/Shape/shape.cpp -framework OpenGL -lglfw -I/opt/homebrew/include -L/opt/homebrew/lib
 
-echo "Compilation done."
-echo "Opening $PROGRAM program..."
-
-# Execute binaries
-./$DIR/$PROGRAM
-
-# Make sure the build finished normally
-echo "Program $PROGRAM terminated without building issues."
+# Check if the compilation was successful
+if [ $? -eq 0 ]; then
+    echo "Compilation succeeded."
+    sleep 1
+    clear
+    echo "Running $PROGRAM..."
+    ./$DIR/$PROGRAM
+else
+    echo "Compilation failed."
+    exit 1
+fi

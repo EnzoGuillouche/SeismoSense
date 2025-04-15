@@ -2,12 +2,25 @@
 #include <OpenGL/gl3.h>
 #include <GLFW/glfw3.h>
 
+#include <optional>
+#include <vector>
+#include <iostream>
+
 #include "Include/input.hpp"
 #include "Include/shader.hpp"
+#include "Include/Shape/shape.hpp"
 #include "Include/render.hpp"
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
+void terminateProgram(std::optional<std::string> message, std::optional<std::vector<Shape*>> shapes, int EXIT_CODE)
+{
+    if (message) std::cout << *message << std::endl;
+
+    shapes.reset();
+    glfwTerminate();
+    exit(EXIT_CODE);
+}
+
+// Whenever the window size changed (by OS or user resize) this callback function executes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
@@ -15,38 +28,34 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-int main()
+void initWindow(GLFWwindow*& window)
 {
-    // glfw: initialize and configure
-    // ------------------------------
+    std::cout << "Initializing the window..." << std::endl;
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    #ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
 
     // glfw window creation
-    // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "SeismoSense", NULL, NULL);
     if (window == NULL)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
+        terminateProgram("Failed to create GLFW window", std::nullopt, EXIT_FAILURE);
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+}
 
-    // OpenGL functions are automatically loaded by macOS, no need for glad
+void initShaders(Shape& shape)
+{
+    std::cout << "Initializing the shaders..." << std::endl;
 
-    unsigned int shaderProgram = buildShaders();
+    glEnable(GL_DEPTH_TEST); // for 3D rendering
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -55,10 +64,10 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * shape.getVertices().size(), shape.getVertices().data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * shape.getIndices().size(), shape.getIndices().data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -70,32 +79,36 @@ int main()
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // draw in wireframe polygons
+}
 
-    // uncomment this call to draw in wireframe polygons.
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+int main()
+{
+    GLFWwindow* window = nullptr;
+    initWindow(window);
+
+    unsigned int shaderProgram = buildShaders();
+
+    Shape* square = new Shape(1);
+    std::vector<Shape*> shapes;
+    shapes.push_back(square);
+
+    initShaders(*square);
+
+    std::cout << "Initialization complete." << std::endl;
 
     // render loop
-    // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // input
-        // -----
-        processInput(window, vertices);
+        processInput(window, square); // input
 
-        // render
-        // ------
-        render(window, shaderProgram, 1.0f, 0.0f, 0.0f);
+        render(window, shaderProgram, *square); // render
     }
 
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
-
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
-    glfwTerminate();
-    return 0;
+    
+    terminateProgram(std::nullopt, shapes, EXIT_SUCCESS);
 }
