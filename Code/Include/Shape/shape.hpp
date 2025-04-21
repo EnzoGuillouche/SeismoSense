@@ -1,5 +1,8 @@
 #pragma once
 
+#include "iostream"
+#include "vector"
+
 /**
     * @brief Represents a 3D shape with parameters and the ability to update those parameters.
     * 
@@ -9,7 +12,7 @@
     */
 class Shape
 {
-private:
+protected:
     // Each vertex consists of 3 floats: x, y, z
     std::vector<float> vertices;
 
@@ -20,14 +23,16 @@ private:
     std::vector<unsigned int> indices;
 
     // Color scheme
-    std::vector<float> colors;
+    std::vector<float> colors = {
+        0.0f, 1.0f, 0.0f
+    };
 
     // Rotation parameters
     float rotationX = 0.0f;
     float rotationY = 0.0f;
     float rotationZ = 0.0f;
 public:
-    Shape(int shapeId);
+    Shape() {};
     ~Shape();
 
     std::vector<float> getVertices() const { return this->vertices; };
@@ -41,6 +46,3 @@ public:
     void updateVertices(int index, float changeAmount);
     void rotate(char axis, float changeAmount);
 };
-
-
-

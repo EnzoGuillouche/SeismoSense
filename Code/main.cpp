@@ -8,8 +8,13 @@
 
 #include "Include/input.hpp"
 #include "Include/shader.hpp"
-#include "Include/Shape/shape.hpp"
 #include "Include/render.hpp"
+
+#include "Include/Shape/shape.hpp"
+#include "Include/Shape/triangle.hpp"
+#include "Include/Shape/square.hpp"
+#include "Include/Shape/pyramid.hpp"
+#include "Include/Shape/cube.hpp"
 
 void terminateProgram(std::optional<std::string> message, std::optional<std::vector<Shape*>> shapes, int EXIT_CODE)
 {
@@ -89,7 +94,7 @@ int main()
 
     unsigned int shaderProgram = buildShaders();
 
-    Shape* square = new Shape(1);
+    Shape* square = new Cube();
     std::vector<Shape*> shapes;
     shapes.push_back(square);
 
