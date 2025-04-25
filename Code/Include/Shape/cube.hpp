@@ -14,5 +14,5 @@
 class Cube : public Shape
 {
 public:
-    Cube();
+    Cube(float xOffset, float yOffset, float zOffset);
 };

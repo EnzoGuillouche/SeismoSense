@@ -14,5 +14,5 @@
 class Pyramid : public Shape
 {
 public:
-    Pyramid();
+    Pyramid(float xOffset, float yOffset, float zOffset);
 };

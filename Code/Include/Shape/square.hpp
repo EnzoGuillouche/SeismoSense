@@ -14,5 +14,5 @@
 class Square : public Shape
 {
 public:
-    Square();
+    Square(float xOffset, float yOffset, float zOffset);
 };

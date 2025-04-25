@@ -14,5 +14,5 @@
 class Triangle : public Shape
 {   
 public:
-    Triangle();
+    Triangle(float xOffset, float yOffset, float zOffset);
 };

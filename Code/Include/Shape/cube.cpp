@@ -5,7 +5,7 @@
     * 
     * The constructor defines the vertices, indices, and color of the shape automatically.
     */
-Cube::Cube()
+Cube::Cube(float xOffset, float yOffset, float zOffset)
 {
     std::cout << "Cube." << std::endl;
 
@@ -14,16 +14,16 @@ Cube::Cube()
     // Define the vertices of a square, each consisting of x, y, and z coordinates
     this->vertices = {
         // Bottom
-        -0.25f, -0.25f, -0.25f,
-        0.25f, -0.25f, -0.25f,
-        0.25f, -0.25f,  0.25f,
-        -0.25f, -0.25f,  0.25f,
+        -0.25f + xOffset, -0.25f + yOffset, -0.25f + zOffset,
+        0.25f + xOffset, -0.25f + yOffset, -0.25f + zOffset,
+        0.25f + xOffset, -0.25f + yOffset, 0.25f + zOffset,
+        -0.25f + xOffset, -0.25f + yOffset, 0.25f + zOffset,
 
         // Top
-        -0.25f, 0.25f, -0.25f,
-        0.25f, 0.25f, -0.25f,
-        0.25f, 0.25f,  0.25f,
-        -0.25f, 0.25f,  0.25f,
+        -0.25f + xOffset, 0.25f + yOffset, -0.25f + zOffset,
+        0.25f + xOffset, 0.25f + yOffset, -0.25f + zOffset,
+        0.25f + xOffset, 0.25f + yOffset, 0.25f + zOffset,
+        -0.25f + xOffset, 0.25f + yOffset, 0.25f + zOffset,
     };
 
     this->indices = {

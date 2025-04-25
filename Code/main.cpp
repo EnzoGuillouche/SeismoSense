@@ -96,10 +96,11 @@ int main()
 
     std::vector<Shape*> shapes;
 
-    Shape* square = new Cube();
-    shapes.push_back(square);
-    Shape* square2 = new Cube();
-    shapes.push_back(square2);
+    for (int i = 0; i < 5; i++)
+    {
+        Shape* shape = new Cube(-i, i, -i);
+        shapes.push_back(shape);
+    }
 
     std::cout << "Initialization complete." << std::endl;
 
