@@ -1,4 +1,10 @@
 #pragma once
+#define GL_SILENCE_DEPRECATION
+#include <OpenGL/gl3.h>
+#include <GLFW/glfw3.h>
+
+#include "iostream"
+#include "vector"
 
 /**
     * @brief Represents a 3D shape with parameters and the ability to update those parameters.
@@ -9,7 +15,8 @@
     */
 class Shape
 {
-private:
+protected:
+    GLuint VAO, VBO, EBO;
     // Each vertex consists of 3 floats: x, y, z
     std::vector<float> vertices;
 
@@ -20,15 +27,19 @@ private:
     std::vector<unsigned int> indices;
 
     // Color scheme
-    std::vector<float> colors;
+    std::vector<float> colors = {
+        0.0f, 1.0f, 0.0f
+    };
 
     // Rotation parameters
     float rotationX = 0.0f;
     float rotationY = 0.0f;
     float rotationZ = 0.0f;
 public:
-    Shape(int shapeId);
+    Shape() {};
     ~Shape();
+    void initBuffers();
+    void draw();
 
     std::vector<float> getVertices() const { return this->vertices; };
     int getShapesTriangles() const { return this->shapesTriangles; };
@@ -41,6 +52,3 @@ public:
     void updateVertices(int index, float changeAmount);
     void rotate(char axis, float changeAmount);
 };
-
-
-

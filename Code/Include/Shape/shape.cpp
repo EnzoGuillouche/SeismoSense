@@ -1,135 +1,4 @@
-#include "iostream"
-#include "vector"
-
 #include "shape.hpp"
-
-/**
-    * @brief Constructor to initialize a shape based on the given ID.
-    * 
-    * The constructor defines the vertices, indices, and color of the shape based on the provided shapeId.
-    * It currently supports the "Square" shape.
-    * 
-    * @param shapeId Integer representing the shape type:
-    * 
-    * - 0 = Square
-    */
-Shape::Shape(int shapeId)
-{
-    std::cout << "Constructing ";
-    
-    // Switch statement to set properties based on the shapeId
-    switch (shapeId)
-    {
-    case 0:
-        std::cout << "Triangle." << std::endl;
-
-        this->shapesTriangles = 1;
-
-        // Define the vertices of a square, each consisting of x, y, and z coordinates
-        this->vertices = {
-            0.0f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-        };
-
-        this->indices = {
-            0, 1, 2,
-        };
-        break;
-    case 1:
-        std::cout << "Square." << std::endl;
-
-        this->shapesTriangles = 2;
-
-        // Define the vertices of a square, each consisting of x, y, and z coordinates
-        this->vertices = {
-            0.5f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f, 0.5f, 0.0f
-        };
-
-        this->indices = {
-            0, 1, 3,
-            1, 2, 3
-        };
-        break;
-    case 2:
-        std::cout << "Pyramid." << std::endl;
-
-        this->shapesTriangles = 4;
-
-        // Define the vertices of a square, each consisting of x, y, and z coordinates
-        this->vertices = {
-            // Base
-            -0.5f, 0.0f, -0.5f,
-            0.5f, 0.0f, -0.5f,
-            0.0f, 0.0f,  0.5f,
-
-            // Apex
-            0.0f, 0.5f, 0.0f
-        };
-
-        this->indices = {
-            // Base
-            0, 1, 2,
-
-            // Sides
-            0, 1, 3,
-            1, 2, 3,
-            2, 0, 3,
-        };
-        break;
-    case 3:
-        std::cout << "Cube." << std::endl;
-
-        this->shapesTriangles = 12;
-
-        // Define the vertices of a square, each consisting of x, y, and z coordinates
-        this->vertices = {
-            // Bottom
-            -0.25f, -0.25f, -0.25f,
-            0.25f, -0.25f, -0.25f,
-            0.25f, -0.25f,  0.25f,
-            -0.25f, -0.25f,  0.25f,
-
-            // Top
-            -0.25f, 0.25f, -0.25f,
-            0.25f, 0.25f, -0.25f,
-            0.25f, 0.25f,  0.25f,
-            -0.25f, 0.25f,  0.25f,
-        };
-
-        this->indices = {
-            // Bottom Base
-            0, 1, 2,
-            0, 3, 2,
-
-            // Top Base
-            4, 5, 6,
-            4, 7, 6,
-
-            // Sides
-            2, 3, 7,
-            2, 6, 7,
-            1, 0, 4,
-            1, 5, 4,
-            6, 5, 1,
-            6, 2, 1,
-            7, 4, 0,
-            7, 3, 0
-        };
-        break;
-    
-    default:
-        std::cerr << " of the shape not allowed: '" << shapeId << "' is out of shapes range." << std::endl;
-        break;
-    }
-
-    this->colors = {
-        0.0f, 1.0f, 0.0f
-    };
-}
 
 /**
     * @brief Destructor to clean up the resources used by the Shape.
@@ -137,8 +6,35 @@ Shape::Shape(int shapeId)
     */
 Shape::~Shape()
 {
-    vertices.clear();
-    indices.clear();
+    this->vertices.clear();
+    this->indices.clear();
+}
+
+// Initiates the shaders for the shape
+void Shape::initBuffers() {
+    glGenVertexArrays(1, &this->VAO);
+    glGenBuffers(1, &this->VBO);
+    glGenBuffers(1, &this->EBO);
+
+    glBindVertexArray(this->VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->getVertices().size(), this->getVertices().data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * this->getIndices().size(), this->getIndices().data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+}
+
+// Draws the shape
+void Shape::draw() {
+    glBindVertexArray(this->VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glDrawElements(GL_TRIANGLES, getIndices().size(), GL_UNSIGNED_INT, 0);
 }
 
 /**
@@ -155,6 +51,8 @@ void Shape::updateVertices(int index, float changeAmount)
     for (int i = 0; i < this->vertices.size(); i += 3) {
         this->vertices[i+index] += changeAmount;
     }
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * this->vertices.size(), this->vertices.data());
 }
 
 void Shape::rotate(char axis, float changeAmount) {
