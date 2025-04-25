@@ -1,4 +1,7 @@
 #pragma once
+#define GL_SILENCE_DEPRECATION
+#include <OpenGL/gl3.h>
+#include <GLFW/glfw3.h>
 
 #include "iostream"
 #include "vector"
@@ -13,6 +16,7 @@
 class Shape
 {
 protected:
+    GLuint VAO, VBO, EBO;
     // Each vertex consists of 3 floats: x, y, z
     std::vector<float> vertices;
 
@@ -34,6 +38,8 @@ protected:
 public:
     Shape() {};
     ~Shape();
+    void initBuffers();
+    void draw();
 
     std::vector<float> getVertices() const { return this->vertices; };
     int getShapesTriangles() const { return this->shapesTriangles; };

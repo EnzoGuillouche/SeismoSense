@@ -13,4 +13,6 @@ Triangle::Triangle() {
     this->indices = {
         0, 1, 2,
     };
+
+    this->initBuffers();
 };

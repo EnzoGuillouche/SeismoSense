@@ -92,22 +92,32 @@ int main()
     GLFWwindow* window = nullptr;
     initWindow(window);
 
-    unsigned int shaderProgram = buildShaders();
+    GLuint shaderProgram = buildShaders();
+
+    std::vector<Shape*> shapes;
 
     Shape* square = new Cube();
-    std::vector<Shape*> shapes;
     shapes.push_back(square);
-
-    initShaders(*square);
+    Shape* square2 = new Cube();
+    shapes.push_back(square2);
 
     std::cout << "Initialization complete." << std::endl;
 
     // render loop
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, square); // input
 
-        render(window, shaderProgram, *square); // render
+        // render
+        glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        for (int i = 0; i < shapes.size(); i++) {
+            processInput(window, shapes[i]); // input
+            render(window, shaderProgram, *shapes[i]); // render
+        }
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     glDeleteVertexArrays(1, &VAO);

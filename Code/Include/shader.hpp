@@ -39,7 +39,7 @@ unsigned int VBO, VAO, EBO;
     * 
     * @return GLuint identifier of the created shader program.
     */
-unsigned int buildShaders() {
+GLuint buildShaders() {
     // Load shader source code from files
     const char* vertexShaderSource   = readShaderFile("Shaders/shader.vert");
     const char* fragmentShaderSource = readShaderFile("Shaders/shader.frag");
