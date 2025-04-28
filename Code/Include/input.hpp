@@ -45,4 +45,10 @@ void processInput(GLFWwindow *window, Shape* shape)
         shape->rotate('z', -1.0f);
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
         shape->rotate('z', 1.0f);
+
+    // Draw param
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        shape->changeDrawParam(GL_LINE);
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        shape->changeDrawParam(GL_FILL);
 }

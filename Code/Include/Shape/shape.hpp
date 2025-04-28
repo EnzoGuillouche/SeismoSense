@@ -16,6 +16,8 @@
 class Shape
 {
 protected:
+    int drawParam = GL_LINE;
+
     GLuint VAO, VBO, EBO;
     // Each vertex consists of 3 floats: x, y, z
     std::vector<float> vertices;
@@ -51,4 +53,5 @@ public:
 
     void updateVertices(int index, float changeAmount);
     void rotate(char axis, float changeAmount);
+    void changeDrawParam(int param);
 };

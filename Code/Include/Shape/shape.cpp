@@ -33,8 +33,12 @@ void Shape::initBuffers() {
 // Draws the shape
 void Shape::draw() {
     glBindVertexArray(this->VAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, this->drawParam);
     glDrawElements(GL_TRIANGLES, getIndices().size(), GL_UNSIGNED_INT, 0);
+}
+
+void Shape::changeDrawParam(int param) {
+    this->drawParam = param;
 }
 
 /**
