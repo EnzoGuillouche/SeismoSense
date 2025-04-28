@@ -96,10 +96,22 @@ int main()
 
     std::vector<Shape*> shapes;
 
-    for (int i = 0; i < 5; i++)
+    int floors = 100;
+
+    float yOffset = 0;
+    for (int i = 0; i < floors; i++)
     {
-        Shape* shape = new Cube(-i, i, -i);
+
+        Shape* shape = new Cube(0, yOffset, 0);
         shapes.push_back(shape);
+        Shape* shape1 = new Cube(0, yOffset, -0.5f);
+        shapes.push_back(shape1);
+        Shape* shape2 = new Cube(0.5f, yOffset, 0);
+        shapes.push_back(shape2);
+        Shape* shape3 = new Cube(0.5f, yOffset, -0.5f);
+        shapes.push_back(shape3);
+        
+        yOffset+=0.5f;
     }
 
     std::cout << "Initialization complete." << std::endl;
@@ -107,7 +119,6 @@ int main()
     // render loop
     while (!glfwWindowShouldClose(window))
     {
-
         // render
         glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
