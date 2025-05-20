@@ -127,37 +127,41 @@ The simulation allows users to configure simulation parameters, listed below wit
 ### Structural Analysis
 
 To ensure the tool is not merely visual but also analytically powerful, it must offer core engineering insights.
+It is basically the system which does the calculations, its outputs are useful to both the visual simulation and the performance metrics.
 
-- Finite Element Method (FEM) Engine (critical for accuracy)
-Internally simulate material stress, strain, and load transfer across structural components using FEM or simplified models.
-Differentiate between materials (steel, concrete, wood) with varying elasticity, ductility, and failure thresholds.
 - Structural Component Behavior Tracking
-Monitor deformation of key components:
-Beams, columns, walls, joints.
-Detect and log overstressed or failed regions.
+  - Differentiate between materials (steel, concrete, wood) with varying elasticity, ductility, and failure thresholds.
+  - Monitor deformation of key components:
+    - beams
+    - columns
+    - walls
+    - joints
+  - Detect and log overstressed or failed regions.
 - Resonance and Damping Effects
-Account for natural frequency of structures and evaluate resonance amplification.
-Allow configuration of damping factors (passive or active dampers).
+  - Account for natural frequency of structures and evaluate resonance amplification.
+  - Allow configuration of damping factors (passive or active dampers).
 
 ### Performance Metrics
 
 Quantitative analysis is vital for evaluating the impact of simulated seismic events.
 
 - Live Metric Dashboards
-Display values such as:
-Peak Ground Acceleration (PGA)
-Maximum Interstory Drift Ratio
-Stress/Strain over time
-Total energy absorbed or dissipated
+  - Display values such as:
+    - Peak Ground Acceleration (PGA)
+    - Maximum Interstory Drift Ratio
+    - Stress/Strain over time
+    - Total energy absorbed or dissipated
 - Safety and Compliance Evaluation
-Estimate damage levels and categorize them (Minor, Moderate, Severe, Collapse).
-Check for compliance with structural safety codes (optionally based on region-specific norms, like Eurocode or ASCE).
+  - Estimate damage levels and categorize them (Minor, Moderate, Severe, Collapse).
+  - Check for compliance with structural safety codes (optionally based on region-specific norms, like Eurocode or ASCE).
 - Report Generation and Export
-Generate detailed simulation reports including:
-Structural performance summary.
-Time-series graphs and visual data overlays.
-Breakdown of failure points and likely causes.
-Export reports in formats like PDF, CSV, or JSON for integration into external tools.
+  - Generate detailed simulation reports including:
+    - Structural performance summary.
+    - Time-series graphs and visual data overlays.
+    - Breakdown of failure points and likely causes.
+  - Export reports in JSON format (useful for integration into external tools).
+
+All the visuals are designed here: https://excalidraw.com/#json=riZxaUI3C_18cf9dc-94s,WoXwZhLVpFS1wYrAZffypQ
 
 ---
 
