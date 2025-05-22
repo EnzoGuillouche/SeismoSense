@@ -20,6 +20,7 @@
       - [Simulation Visualization](#simulation-visualization)
     - [Structural Analysis](#structural-analysis)
     - [Performance Metrics](#performance-metrics)
+      - [JSON reports](#json-reports)
   - [Non-functional Requirements](#non-functional-requirements)
 
 </details>
@@ -124,6 +125,8 @@ The simulation allows users to configure simulation parameters, listed below wit
   - Model how soil dampening and resonance influence building response.
   - Visualize how foundation and substructure interact with terrain.
 
+All the visuals are designed here: https://excalidraw.com/#json=riZxaUI3C_18cf9dc-94s,WoXwZhLVpFS1wYrAZffypQ
+
 ### Structural Analysis
 
 To ensure the tool is not merely visual but also analytically powerful, it must offer core engineering insights.
@@ -161,7 +164,64 @@ Quantitative analysis is vital for evaluating the impact of simulated seismic ev
     - Breakdown of failure points and likely causes.
   - Export reports in JSON format (useful for integration into external tools).
 
-All the visuals are designed here: https://excalidraw.com/#json=riZxaUI3C_18cf9dc-94s,WoXwZhLVpFS1wYrAZffypQ
+#### JSON reports
+
+The JSON reports have a specific structure that make them readable and understandable, as well as precise and reliable.
+Its naming conventions are `full-name-id.json`.
+
+**simulationInfo** is the part containing the overall simulation information:
+
+- "simulationId" contains the simulation ID (the same as in the file name).
+- "status" stands for ensuring the simulation failed or not. Typically "Completed" or "Failed".
+- "duration" is a floating number relating to the whole simulation duration. The unit is in seconds (s).
+
+**seismicEvent** is the part containing the earthquake's parameters:
+
+- "magnitude" is a floating number relating to the earthquake's magnitude.
+- "epicenter" is an object containing the "x_coordinates" and "y_coordinates" of the earthquake's epicenter. Each coordinate is a floating number.
+- "depth" is a floating number relating to the earthquake's depth (being the z-coordinates of the epicenter).
+- "duration" is a floating number relating to the earthquake duration. The unit is in seconds (s).
+- "groundAcceleration" is the part that quantifies how strongly the ground shakes during the earthquake:
+  - "PGA" is a floating number representing the Peak Ground Acceleration. This value relates to the force that structures experience. The unit is g (gravitational acceleration).
+  - "PGV" is a floating number representing the Peak Ground Velocity. It reflects the maximum speed at which the ground moves during the quake. The unit is in centimeters per second (cm/s).
+- "waveCharacteristics" defines the nature of seismic waves generated during the event, which affect how structures vibrate:
+  - "types" is an array of strings listing the types of seismic waves involved in the simulation:
+    - "P-wave" (primary wave): Fastest wave, compresses and expands ground in the direction of travel.
+    - "S-wave" (secondary wave): Slower but more destructive, moves ground perpendicular to travel direction.
+    - "Surface wave": Travels along the Earth’s surface, typically causes the most damage due to large amplitude and long duration.
+  - "dominantFrequencies" is an array of floating numbers representing the main frequencies of the seismic waves. These frequencies determine how likely a structure is to resonate with the quake. The unit is in Hertz (Hz).
+  - "resonantFrequency" is a floating number indicating the frequency at which the simulated building or structure naturally resonates. The unit is in Hertz (Hz).
+
+**siteConditions** defines the geological and environmental context of the simulated area, which significantly affects how seismic waves interact with the structure:
+
+- "soilType" describes the dominant soil in the area (e.g., "Soft clay", "Dense sand", "Rock"). This impacts how seismic waves are amplified or attenuated.
+- "liquefactionRisk" indicates the likelihood of soil liquefaction during shaking. Typically "Low", "Moderate", or "High".
+- "soilDampingRatio" is a floating number (between 0 and 1) expressing the inherent energy dissipation capability of the soil. A higher ratio means the ground can absorb more seismic energy, reducing structural vibration.
+- "topography" describes the terrain shape at the simulation site (e.g., "Flat", "Slope", "Valley"). Topographic features can focus or scatter seismic energy, changing the intensity and direction of shaking.
+
+**structure** contains all the technical and contextual information about the building or infrastructure being tested:
+
+- "buildingId" is a unique ID for the simulated structure.
+- "buildingType" defines the structural system of the building, such as "Reinforced Concrete Frame", "Steel Moment Frame", "Masonry" etc.
+- "materialProperties" is an array of objects that define the physical characteristics of the materials used in the building’s construction. Each object represents a material type and includes relevant engineering parameters that determine how it responds under seismic stress:
+  - "materialType" indicates the class or kind of material used, e.g., "High-Strength Composite", "Engineered Timber", or "Low-Strength Masonry". This abstracts away from traditional material labels and focuses on performance characteristics.
+  - "elasticModulus" is a floating number (in GPa) that defines the material’s stiffness—how much it resists elastic (temporary) deformation under stress.
+  - "yieldStrength" is a floating number (in MPa) showing the stress at which the material transitions from elastic to plastic behavior—this is when permanent deformation begins.
+  - "ultimateStrain" is a floating number indicating how much strain (deformation relative to original size) the material can undergo before complete failure. This tells us about brittleness or ductility.
+  - "ductilityRatio" is a unitless value that defines the capacity to undergo plastic deformation without breaking. Higher values are desirable for seismic performance because ductile materials absorb more energy.
+  - "energyAbsorptionCapacity" summarizes the material’s ability to absorb and dissipate seismic energy before failure. Typically "Low", "Moderate" or "High".
+  - "resilience" qualitatively describes how well the material recovers from deformation or stress, useful for post-earthquake structural assessments. Typically "Poor", "Moderate" or "Excellent".
+- "massDistribution" describes how the mass is spread throughout the structure (e.g., "Uniform", "Top-Heavy"). Uneven distribution can cause torsional response and stress concentration.
+- "naturalFrequency" is a floating number representing the natural vibration frequency of the structure. If this value is close to the dominant seismic wave frequency, resonance can amplify shaking. The unit is in Hertz (Hz).
+- "dampingRatio" is a floating number (between 0 and 1) defining the damping capacity of the structure itself. It reflects how quickly oscillations die out after shaking.
+- "foundationType" indicates how the structure is anchored to the ground (e.g., "Shallow", "Deep pile", "Mat foundation"). The foundation affects how seismic forces are transferred to the building.
+- "occupancyType" defines the function of the structure (e.g., "Hospital", "School", "Residential"). Useful for safety and regulatory considerations and may influence acceptable performance thresholds.
+- "nearbyStructures" is an array of objects that represent other buildings in proximity:
+Each object contains:
+  - "buildingId": An ID of the nearby structure.
+  - "distance": A floating number specifying the distance in meters from the main structure. Close distances may lead to pounding effects or collective risk in urban areas.
+
+[Here](./example-report-EXME2025.json) is an example of the JSON reports exported from the simulation.
 
 ---
 

@@ -1,0 +1,107 @@
+{
+  "simulationInfo": {
+    "simulationId": "EXME2025",
+    "status": "Completed",
+    "duration": 45.2
+  },
+  "seismicEvent": {
+    "magnitude": 6.8,
+    "epicenter": {
+      "x_coordinates": 35.6895,
+      "y_coordinates": 139.6917
+    },
+    "depth": 12.0,
+    "duration": 30,
+    "groundAcceleration": {
+      "PGA": 0.65,
+      "PGV": 75.3
+    },
+    "waveCharacteristics": {
+      "types": ["P-wave", "S-wave", "Surface wave"],
+      "dominantFrequencies": [0.8, 3.2],
+      "resonantFrequency": 1.2
+    }
+  },
+  "siteConditions": {
+    "soilType": "Soft clay",
+    "liquefactionRisk": "High",
+    "soilDampingRatio": 0.05,
+    "topography": "Flat"
+  },
+  "structure": {
+    "buildingId": "B-001",
+    "buildingType": "Reinforced Concrete Frame",
+    "materialProperties": [
+      {
+        "materialType": "High-Strength Composite",
+        "elasticModulus": 40,
+        "yieldStrength": 600,
+        "ultimateStrain": 0.015,
+        "ductilityRatio": 10,
+        "energyAbsorptionCapacity": "High",
+        "resilience": "Excellent"
+      },
+      {
+        "materialType": "Low-Strength Masonry",
+        "elasticModulus": 10,
+        "yieldStrength": 120,
+        "ultimateStrain": 0.002,
+        "ductilityRatio": 2,
+        "energyAbsorptionCapacity": "Low",
+        "resilience": "Poor"
+      }
+    ],
+    "massDistribution": "Uniform",
+    "naturalFrequency": 1.2,
+    "dampingRatio": 0.03,
+    "foundationType": "Shallow",
+    "occupancyType": "Hospital",
+    "nearbyStructures": [
+      { "buildingId": "B-002", "distance": 8.5 },
+      { "buildingId": "B-003", "distance": 15.0 }
+    ]
+  },
+  "structuralResponse": {
+    "maxDisplacement": 18.4, Cm,
+    "maxInterstoryDriftRatio": 0.038,
+    "components": {
+      "beams": {
+        "failed": 3,
+        "overstressed": 5
+      },
+      "columns": {
+        "failed": 1,
+        "overstressed": 4
+      },
+      "walls": {
+        "cracked": 7,
+        "buckled": 2
+      },
+      "joints": {
+        "damaged": 4
+      }
+    },
+    "resonanceDetected": true,
+    "dampingEffectiveness": "Moderate"
+  },
+  "performanceMetrics": {
+    "totalEnergyInput": 14600, kJ,
+    "totalEnergyDissipated": 9250, kJ,
+    "safetyEvaluation": {
+      "damageLevel": "Severe",
+      "codeCompliance": {
+        "compliant": false,
+        "violations": ["Drift limit exceeded", "Insufficient joint capacity"]
+      }
+    }
+  },
+  "reporting": {
+    "reportFileName": "example-metrics-2025.json",
+    "exportFormats": "JSON",
+    "graphicalOverlays": [
+      "DisplacementHeatmap",
+      "StressVsTime",
+      "FailureTimeline"
+    ]
+  }
+}
