@@ -20,7 +20,7 @@
       - [Simulation Visualization](#simulation-visualization)
     - [Structural Analysis](#structural-analysis)
     - [Performance Metrics](#performance-metrics)
-      - [JSON reports](#json-reports)
+    - [JSON reports](#json-reports)
   - [Non-functional Requirements](#non-functional-requirements)
 
 </details>
@@ -157,17 +157,18 @@ Quantitative analysis is vital for evaluating the impact of simulated seismic ev
 - Safety and Compliance Evaluation
   - Estimate damage levels and categorize them (Minor, Moderate, Severe, Collapse).
   - Check for compliance with structural safety codes (optionally based on region-specific norms, like Eurocode or ASCE).
+
+### JSON reports
+
+The JSON reports have a specific structure that make them readable and understandable, as well as precise and reliable.
+Its naming conventions are `full-name-id.json`.
+
 - Report Generation and Export
   - Generate detailed simulation reports including:
     - Structural performance summary.
     - Time-series graphs and visual data overlays.
     - Breakdown of failure points and likely causes.
   - Export reports in JSON format (useful for integration into external tools).
-
-#### JSON reports
-
-The JSON reports have a specific structure that make them readable and understandable, as well as precise and reliable.
-Its naming conventions are `full-name-id.json`.
 
 **simulationInfo** is the part containing the overall simulation information:
 
