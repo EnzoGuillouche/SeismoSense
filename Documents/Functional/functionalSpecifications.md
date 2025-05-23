@@ -221,6 +221,32 @@ Each object contains:
   - "buildingId": An ID of the nearby structure.
   - "distance": A floating number specifying the distance in meters from the main structure. Close distances may lead to pounding effects or collective risk in urban areas.
 
+**structuralResponse** is the section that captures how the building or structure behaved during the simulated earthquake. It includes both overall metrics and per-component breakdowns of damage and stress:
+
+- "maxDisplacement" is a floating number representing the maximum horizontal or vertical movement experienced by the structure during the event. The unit is in centimeters (cm).
+- "maxInterstoryDriftRatio" is an unitless floating number expressing the maximum relative displacement between two consecutive floors, divided by the floor height.
+- "components" is an object detailing the performance and damage state of individual structural elements:
+  - "beams" tracks key horizontal support members.
+    - "failed" is the number of beams that have fully fractured or collapsed during the simulation.
+    - "overstressed" is the number of beams that exceeded safe stress thresholds but have not completely failed.
+  - "columns" tracks vertical load-bearing members.
+    - "failed" counts columns that lost their load-bearing capacity, often resulting in partial or total collapse.
+    - "overstressed" counts columns that were pushed beyond design limits but did not fail completely.
+  - "walls" includes both load-bearing and partition walls.
+    - "cracked" refers to walls that developed visible structural or surface cracks due to tensile stress.
+    - "buckled" indicates walls that deformed or bowed due to compressive forces, suggesting near-failure or collapse.
+  - "joints" monitors the connections between structural elements (beam-column joints, wall-slab joints, etc.).
+    - "damaged" refers to joints that have experienced partial failure, loosening, or cracking, affecting the overall structural integrity.
+- "resonanceDetected" is a boolean value that indicates whether the building's natural frequency aligned with the dominant frequency of the seismic waves, which would result in amplified motion and elevated structural risk.
+- "dampingEffectiveness" qualitatively indicates how well the building’s damping systems or natural damping characteristics reduced oscillations and energy transfer during the earthquake. Typically "Low", "Moderate" or "High".
+
+**performanceMetrics** summarizes the quantitative results of the simulation and evaluates the structure’s behavior under seismic stress in terms of energy, safety, and code compliance:
+
+- "totalEnergyInput" is a floating number representing the total seismic energy transferred from the ground to the structure. This includes the energy carried by all types of seismic waves over the simulation duration. The unit is in kilojoules (kJ).
+- "totalEnergyDissipated" is a floating number indicating how much of that energy was absorbed or dampened by the structure through mechanisms such as friction, plastic deformation, or engineered dampers. The difference between input and dissipated energy can reflect how much energy remained in the form of structural vibration or damage. The unit is in kilojoules (kJ).
+- "safetyEvaluation" is an object that gives a summarized safety status of the structure post-earthquake:
+  - "damageLevel" qualitatively describes the overall damage state based on combined component performance and drift metrics. It helps in risk classification and repair prioritization. Typically "Minor", "Moderate", "Severe" or "Collapse".
+
 [Here](./example-report-EXME2025.json) is an example of the JSON reports exported from the simulation.
 
 ---

@@ -62,7 +62,7 @@
     ]
   },
   "structuralResponse": {
-    "maxDisplacement": 18.4, Cm,
+    "maxDisplacement": 18.4,
     "maxInterstoryDriftRatio": 0.038,
     "components": {
       "beams": {
@@ -85,23 +85,10 @@
     "dampingEffectiveness": "Moderate"
   },
   "performanceMetrics": {
-    "totalEnergyInput": 14600, kJ,
-    "totalEnergyDissipated": 9250, kJ,
+    "totalEnergyInput": 14600,
+    "totalEnergyDissipated": 9250,
     "safetyEvaluation": {
-      "damageLevel": "Severe",
-      "codeCompliance": {
-        "compliant": false,
-        "violations": ["Drift limit exceeded", "Insufficient joint capacity"]
-      }
+      "damageLevel": "Severe"
     }
-  },
-  "reporting": {
-    "reportFileName": "example-metrics-2025.json",
-    "exportFormats": "JSON",
-    "graphicalOverlays": [
-      "DisplacementHeatmap",
-      "StressVsTime",
-      "FailureTimeline"
-    ]
   }
 }
