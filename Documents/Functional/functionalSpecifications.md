@@ -12,7 +12,8 @@
       - [Constraints](#constraints)
     - [Stakeholders](#stakeholders)
     - [Target Audience](#target-audience)
-  - [Personas and Use Cases](#personas-and-use-cases)
+  - [Personas](#personas)
+  - [Use Cases](#use-cases)
   - [Functional Requirements](#functional-requirements)
     - [Simulation](#simulation)
       - [Simulation Interface](#simulation-interface)
@@ -68,7 +69,83 @@ To ensure the project meets all the needs of the target audience, it must strike
 
 ---
 
-## Personas and Use Cases
+## Personas
+
+1. Elena Ruiz – Seismic Researcher
+Age: 42
+Occupation: Earthquake engineering professor & researcher
+Goals:
+- Simulate historic or hypothetical seismic events.
+- Study structural behaviors under various geotechnical conditions.
+- Publish research using simulation results.
+Pain Points:
+- Needs high-precision scientific outputs.
+- Dislikes tools with limited configurability or lack of documentation.
+
+1. Alex Kim – Structural Engineer
+Age: 35
+Occupation: Building safety consultant
+Goals:
+- Test new building designs for seismic resilience.
+- Ensure compliance with safety codes like Eurocode 8 or ASCE 7.
+- Export simulation results for client reports.
+Pain Points:
+- Needs simulation tools that can model more or less complex structural behavior.
+- Prefers real-time feedback and visual clarity for clients.
+
+1. Tariq Hassan – Civil Engineering Student
+Age: 21
+Occupation: Master's student in civil engineering
+Goals:
+- Learn how soil, structure, and seismic forces interact.
+- Run experiments and produce reports for class projects.
+- Explore different scenarios to test building assumptions.
+Pain Points:
+- Needs a simple and guided interface.
+- Lacks deep knowledge of seismic metrics or materials.
+
+---
+
+## Use Cases
+
+🔹 **Configure a Custom Seismic Event**
+
+Actor: Elena Ruiz (Researcher)
+Precondition: The simulation tool is launched.
+Steps:
+
+- User accesses the simulation configuration panel.
+- Inputs magnitude, wave types, and PGA values.
+- Selects soil type and topography.
+- Launches simulation.
+
+Postcondition: A new simulation with custom seismic conditions begins.
+
+🔹 **Evaluate Structural Design Performance**
+
+Actor: Alex Kim (Engineer)
+Precondition: A building model is selected.
+Steps:
+
+- Engineer selects predefined building or create his own configuration.
+- Defines material properties and damping ratio.
+- Runs simulation with target earthquake parameters.
+- Reviews dashboard with interstory drift, stress levels, and code compliance.
+
+Postcondition: The structural model is evaluated, and a performance report is generated.
+
+🔹 **Study Structural Resonance Effects**
+
+Actor: Tariq Hassan (Student)
+Precondition: A default building and soil type are loaded.
+Steps:
+
+- User sets wave frequency range.
+- Starts simulation and views real-time animations.
+- Toggles resonance data overlay.
+- Notes resonant behavior and downloads metrics.
+
+Postcondition: Student gains insight into how resonance affects structural performance.
 
 ---
 
