@@ -3,7 +3,7 @@
 #include "shape.hpp"
 
 /**
-    * @brief Represents a 3D Triangle with parameters and the ability to update those parameters. 
+    * @brief Represents a 3D Rectangle with parameters and the ability to update those parameters. 
     * 
     * Inherits from the `Shape` class.
     * 
@@ -11,8 +11,8 @@
     * and color information. It provides functions to retrieve and update these properties, 
     * enabling dynamic manipulation of the shape.
     */
-class Triangle : public Shape
-{   
+class Rectangle : public Shape
+{
 public:
-    Triangle(float xOffset, float yOffset, float zOffset, std::vector<float> colors);
+    Rectangle(float xPos, float yPos, float xSize, float ySize, std::vector<float> colors);
 };

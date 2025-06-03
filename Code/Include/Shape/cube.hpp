@@ -14,5 +14,5 @@
 class Cube : public Shape
 {
 public:
-    Cube(float xOffset, float yOffset, float zOffset);
+    Cube(float xOffset, float yOffset, float zOffset, std::vector<float> colors);
 };

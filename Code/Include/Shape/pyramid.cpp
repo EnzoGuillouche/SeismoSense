@@ -5,7 +5,7 @@
     * 
     * The constructor defines the vertices, indices, and color of the shape automatically.
     */
-Pyramid::Pyramid(float xOffset, float yOffset, float zOffset)
+Pyramid::Pyramid(float xOffset, float yOffset, float zOffset, std::vector<float> colors) : Shape(GL_LINE, colors)
 {
     std::cout << "Pyramid." << std::endl;
 

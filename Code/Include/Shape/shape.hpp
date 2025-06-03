@@ -38,7 +38,7 @@ protected:
     float rotationY = 0.0f;
     float rotationZ = 0.0f;
 public:
-    Shape() {};
+    Shape(int drawParam, std::vector<float> colors);
     ~Shape();
     void initBuffers();
     void draw();

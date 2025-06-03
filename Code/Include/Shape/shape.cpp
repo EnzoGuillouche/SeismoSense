@@ -1,5 +1,11 @@
 #include "shape.hpp"
 
+Shape::Shape(int drawParam, std::vector<float> colors)
+{
+    this->drawParam = drawParam;
+    this->colors = colors;
+}
+
 /**
     * @brief Destructor to clean up the resources used by the Shape.
     * 

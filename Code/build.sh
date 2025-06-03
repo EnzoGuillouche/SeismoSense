@@ -31,7 +31,7 @@ fi
 
 # Compilation command
 echo "Compiling the program..."
-g++ -std=c++17 -o $DIR/$PROGRAM main.cpp Include/Shape/shape.cpp Include/Shape/triangle.cpp Include/Shape/square.cpp Include/Shape/pyramid.cpp Include/Shape/cube.cpp -framework OpenGL -lglfw -I/opt/homebrew/include -L/opt/homebrew/lib
+g++ -std=c++17 -o $DIR/$PROGRAM main.cpp Include/Shape/shape.cpp Include/Shape/rectangle.cpp Include/Shape/triangle.cpp Include/Shape/square.cpp Include/Shape/pyramid.cpp Include/Shape/cube.cpp -framework OpenGL -lglfw -I/opt/homebrew/include -L/opt/homebrew/lib
 
 # Check if the compilation was successful
 if [ $? -eq 0 ]; then

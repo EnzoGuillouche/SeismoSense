@@ -14,5 +14,5 @@
 class Square : public Shape
 {
 public:
-    Square(float xOffset, float yOffset, float zOffset);
+    Square(float xOffset, float yOffset, float zOffset, std::vector<float> colors);
 };

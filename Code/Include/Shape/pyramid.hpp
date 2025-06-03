@@ -14,5 +14,5 @@
 class Pyramid : public Shape
 {
 public:
-    Pyramid(float xOffset, float yOffset, float zOffset);
+    Pyramid(float xOffset, float yOffset, float zOffset, std::vector<float> colors);
 };

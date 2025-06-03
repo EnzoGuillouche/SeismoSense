@@ -11,6 +11,7 @@
 #include "Include/render.hpp"
 
 #include "Include/Shape/shape.hpp"
+#include "Include/Shape/rectangle.hpp"
 #include "Include/Shape/triangle.hpp"
 #include "Include/Shape/square.hpp"
 #include "Include/Shape/pyramid.hpp"
@@ -94,21 +95,25 @@ int main()
 
     GLuint shaderProgram = buildShaders();
 
+    // tab
+    Shape* tab = new Rectangle(0.4f, -1.0f, 0.7f, 2.0f, { 0, 0, 1.0f });
+
+    // simulation shapes
     std::vector<Shape*> shapes;
 
-    int floors = 100;
+    int floors = 3;
 
     float yOffset = 0;
     for (int i = 0; i < floors; i++)
     {
 
-        Shape* shape = new Cube(0, yOffset, 0);
+        Shape* shape = new Cube(0, yOffset, 0, { 0, 1.0f, 0 });
         shapes.push_back(shape);
-        Shape* shape1 = new Cube(0, yOffset, -0.5f);
+        Shape* shape1 = new Cube(0, yOffset, -0.5f, { 0, 1.0f, 0 });
         shapes.push_back(shape1);
-        Shape* shape2 = new Cube(0.5f, yOffset, 0);
+        Shape* shape2 = new Cube(0.5f, yOffset, 0, { 0, 1.0f, 0 });
         shapes.push_back(shape2);
-        Shape* shape3 = new Cube(0.5f, yOffset, -0.5f);
+        Shape* shape3 = new Cube(0.5f, yOffset, -0.5f, { 0, 1.0f, 0 });
         shapes.push_back(shape3);
         
         yOffset+=0.5f;
@@ -122,11 +127,13 @@ int main()
         // render
         glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        
         for (int i = 0; i < shapes.size(); i++) {
-            processInput(window, shapes[i]); // input
-            render(window, shaderProgram, *shapes[i]); // render
+            processInput(window, shapes[i]);
+            render(window, shaderProgram, *shapes[i]);
         }
+
+        render(window, shaderProgram, *tab);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

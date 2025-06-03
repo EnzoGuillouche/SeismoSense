@@ -1,6 +1,7 @@
 #include "square.hpp"
 
-Square::Square(float xOffset, float yOffset, float zOffset) {
+Square::Square(float xOffset, float yOffset, float zOffset, std::vector<float> colors) : Shape(GL_LINE, colors)
+{
     this->shapesTriangles = 2;
 
     // Define the vertices of a square, each consisting of x, y, and z coordinates

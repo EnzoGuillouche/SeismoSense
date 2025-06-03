@@ -1,6 +1,7 @@
 #include "triangle.hpp"
 
-Triangle::Triangle(float xOffset, float yOffset, float zOffset) {
+Triangle::Triangle(float xOffset, float yOffset, float zOffset, std::vector<float> colors) : Shape(GL_LINE, colors)
+{
     this->shapesTriangles = 1;
 
     // Define the vertices of a Triangle, each consisting of x, y, and z coordinates
