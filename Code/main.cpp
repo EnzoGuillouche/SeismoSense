@@ -4,8 +4,13 @@
 
 #include <optional>
 #include <vector>
+#include <map>
 #include <iostream>
 
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+#include "Include/character.hpp"
 #include "Include/input.hpp"
 #include "Include/shader.hpp"
 #include "Include/render.hpp"
@@ -94,6 +99,8 @@ int main()
     initWindow(window);
 
     GLuint shaderProgram = buildShaders();
+    GLuint textShaderProgram = buildTextShaders();
+    loadFont("Fonts/Roboto/Roboto-VariableFont.ttf");
 
     // tab
     Shape* tab = new Rectangle(0.4f, -1.0f, 0.7f, 2.0f, { 0, 0, 1.0f });
@@ -134,6 +141,8 @@ int main()
         }
 
         render(window, shaderProgram, *tab);
+
+        renderText(textShaderProgram, "Hello, OpenGL!", SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
         glfwSwapBuffers(window);
         glfwPollEvents();

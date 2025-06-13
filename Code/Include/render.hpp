@@ -10,8 +10,6 @@
 
 #include "shader.hpp"
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
 constexpr float BACKGROUND_COLOR[3] = { 0.0f, 0.0f, 0.0f };
 
 /**
@@ -41,4 +39,51 @@ void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape) {
     glUniform4f(vertexColorLocation, shape.getColors()[0], shape.getColors()[1], shape.getColors()[2], 1.0f);
 
     shape.draw();
+}
+
+void renderText(unsigned int shaderProgram, std::string text, float x, float y, float scale, glm::vec3 color) {
+    // First, we compute total width of the text
+    float textWidth = 0.0f;
+    for (char c : text) {
+        Character ch = Characters[c];
+        textWidth += (ch.Advance >> 6) * scale;
+    }
+
+    // Center the text horizontally at (x, y)
+    float startX = x - textWidth / 2.0f;
+
+    glUseProgram(shaderProgram);
+    glUniform3f(glGetUniformLocation(shaderProgram, "textColor"), color.x, color.y, color.z);
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(textVAO);
+
+    for (char c : text) {
+        Character ch = Characters[c];
+
+        float xpos = startX + ch.Bearing.x * scale;
+        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+        float w = ch.Size.x * scale;
+        float h = ch.Size.y * scale;
+
+        float vertices[6][4] = {
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos,     ypos,       0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 0.0f }
+        };
+
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        startX += (ch.Advance >> 6) * scale;
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
