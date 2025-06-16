@@ -36,6 +36,7 @@ const char* readShaderFile(const std::string& filename) {
 
 // OpenGL buffer object handles
 unsigned int VBO, VAO, EBO;
+unsigned int textVAO, textVBO;
 
 /**
     * @brief Builds and compiles the vertex and fragment shaders, then links them into a shader program.

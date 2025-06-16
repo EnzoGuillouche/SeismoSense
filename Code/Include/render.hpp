@@ -41,30 +41,30 @@ void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape) {
     shape.draw();
 }
 
-void renderText(unsigned int shaderProgram, std::string text, float x, float y, float scale, glm::vec3 color) {
+void renderText(unsigned int shaderProgram, Text& text, float scale, glm::vec3 color) {
     // First, we compute total width of the text
     float textWidth = 0.0f;
-    for (char c : text) {
-        Character ch = Characters[c];
-        textWidth += (ch.Advance >> 6) * scale;
+    for (char c : text.getText()) {
+        Character ch = text.getCharacters()[c];
+        textWidth += (ch.advance >> 6) * scale;
     }
 
     // Center the text horizontally at (x, y)
-    float startX = x - textWidth / 2.0f;
+    float startX = text.getPos()[0] - textWidth / 2.0f;
 
     glUseProgram(shaderProgram);
     glUniform3f(glGetUniformLocation(shaderProgram, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(textVAO);
+    glBindVertexArray(text.getVAO());
 
-    for (char c : text) {
-        Character ch = Characters[c];
+    for (char c : text.getText()) {
+        Character ch = text.getCharacters()[c];
 
-        float xpos = startX + ch.Bearing.x * scale;
-        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+        float xpos = startX + ch.bearing.x * scale;
+        float ypos = text.getPos()[1] - (ch.size.y - ch.bearing.y) * scale;
 
-        float w = ch.Size.x * scale;
-        float h = ch.Size.y * scale;
+        float w = ch.size.x * scale;
+        float h = ch.size.y * scale;
 
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },
@@ -76,12 +76,12 @@ void renderText(unsigned int shaderProgram, std::string text, float x, float y, 
             { xpos + w, ypos + h,   1.0f, 0.0f }
         };
 
-        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+        glBindTexture(GL_TEXTURE_2D, ch.textureID);
+        glBindBuffer(GL_ARRAY_BUFFER, text.getVBO());
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        startX += (ch.Advance >> 6) * scale;
+        startX += (ch.advance >> 6) * scale;
     }
 
     glBindVertexArray(0);
