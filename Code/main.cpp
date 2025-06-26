@@ -11,6 +11,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 #include "Include/shader.hpp"
+#include "Include/camera.hpp"
 #include "Include/character.hpp"
 #include "Include/input.hpp"
 #include "Include/render.hpp"
@@ -101,10 +102,12 @@ int main()
     GLuint shaderProgram = buildShaders();
     GLuint textShaderProgram = buildTextShaders();
 
+    Camera camera;
+
     // tab
-    Shape* tab = new Rectangle(0.4f, -1.0f, 0.7f, 2.0f, { 0, 0, 1.0f });
+    Shape* tab = new Rectangle(SCR_WIDTH-250.0f, 0, 250.0f, SCR_HEIGHT, { 0, 0, 1.0f });
     // create text for tab
-    Text tabText("Simulation", { SCR_WIDTH / 6.0f * 5, 550 }, textVAO, textVBO);
+    Text tabText("Simulation", { SCR_WIDTH/6.0f*5+8, SCR_HEIGHT-50 }, textVAO, textVBO);
 
     // simulation shapes
     std::vector<Shape*> shapes;
@@ -132,16 +135,16 @@ int main()
     // render loop
     while (!glfwWindowShouldClose(window))
     {
-        // render
         glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
+        processInput(window, camera);
+
         for (int i = 0; i < shapes.size(); i++) {
-            processInput(window, shapes[i]);
-            render(window, shaderProgram, *shapes[i]);
+            render(window, shaderProgram, *shapes[i], camera, false);
         }
 
-        render(window, shaderProgram, *tab);
+        render(window, shaderProgram, *tab, camera, true);
         renderText(textShaderProgram, tabText, 0.65f, glm::vec3(1.0f, 1.0f, 1.0f));
 
         glfwSwapBuffers(window);

@@ -4,51 +4,30 @@
 #include <GLFW/glfw3.h>
 
 #include "Shape/shape.hpp"
+#include "camera.hpp"
 
 /**
     * @brief Processes keyboard input to control the movement of a shape's vertices and window state    
     * 
     * @param window Pointer to the GLFW window being used, which allows us to capture user input.
-    * @param shape Pointer to a Shape object whose vertices will be updated based on keyboard input.
+    * @param camera Reference of a Camera object whose coordinates will be updated based on keyboard input.
     */
-void processInput(GLFWwindow *window, Shape* shape)
+void processInput(GLFWwindow *window, Camera& camera)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    // Zoom / Unzoom on shape 
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        shape->updateVertices(2, 0.02f);
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        shape->updateVertices(2, -0.02f);
-
-    // Shape movement
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        shape->updateVertices(1, 0.02f);
+        camera.moveForward();
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        shape->updateVertices(1, -0.02f);
+        camera.moveBackward();
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        shape->updateVertices(0, -0.02f);
+        camera.moveLeft();
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        shape->updateVertices(0, 0.02f);
-        
-    // Shape Rotation
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        shape->rotate('x', -1.0f);
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        shape->rotate('x', 1.0f);
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        shape->rotate('y', -1.0f);
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        shape->rotate('y', 1.0f);
-    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
-        shape->rotate('z', -1.0f);
-    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
-        shape->rotate('z', 1.0f);
-
-    // Draw param
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-        shape->changeDrawParam(GL_LINE);
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-        shape->changeDrawParam(GL_FILL);
+        camera.moveRight();
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.moveUp();
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camera.moveDown();
 }
+

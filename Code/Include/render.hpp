@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "shader.hpp"
+#include "camera.hpp"
 
 constexpr float BACKGROUND_COLOR[3] = { 0.0f, 0.0f, 0.0f };
 
@@ -20,7 +21,7 @@ constexpr float BACKGROUND_COLOR[3] = { 0.0f, 0.0f, 0.0f };
     * @param shaderProgram OpenGL shader program ID used to render the shape.
     * @param shape Shape object containing the vertex and color data for rendering.
     */
-void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape) {
+void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape, Camera& camera, bool staticToCamera = false) {
     glUseProgram(shaderProgram);
 
     glm::mat4 model = glm::mat4(1.0f);
@@ -28,8 +29,8 @@ void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape) {
     model = glm::rotate(model, glm::radians(shape.getRotationY()), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, glm::radians(shape.getRotationZ()), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view = staticToCamera ? glm::mat4(1.0f) : camera.getViewMatrix();
+    glm::mat4 projection = staticToCamera ? glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT) : glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
