@@ -9,29 +9,9 @@ Text::Text(std::string text, std::vector<float> pos, unsigned int textVAO, unsig
     this->loadFont("Fonts/Roboto/Roboto-VariableFont.ttf");
 }
 
-std::string Text::getText()
+void Text::setPos(std::vector<float> newPos)
 {
-    return this->text;
-}
-
-std::map<char, Character> Text::getCharacters()
-{
-    return this->characters;
-}
-
-unsigned int Text::getVAO()
-{
-    return this->textVAO;
-}
-
-unsigned int Text::getVBO()
-{
-    return this->textVBO;
-}
-
-std::vector<float> Text::getPos()
-{
-    return this->pos;
+    this->pos = newPos;
 }
 
 void Text::loadFont(const char* fontPath) 

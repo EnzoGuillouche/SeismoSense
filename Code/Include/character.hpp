@@ -29,9 +29,10 @@ private:
 public:
     Text(std::string text, std::vector<float> pos, unsigned int textVAO, unsigned int textVBO);
     void loadFont(const char* fontPath);
-    unsigned int getVAO();
-    unsigned int getVBO();
-    std::string getText();
-    std::vector<float> getPos();
-    std::map<char, Character> getCharacters();
+    unsigned int getVAO() { return this->textVAO; };
+    unsigned int getVBO() { return this->textVBO; };
+    std::string getText() { return this->text; };
+    std::vector<float> getPos() { return this->pos; };
+    void setPos(std::vector<float> newPos);
+    std::map<char, Character> getCharacters() { return this->characters; };
 };

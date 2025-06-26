@@ -13,6 +13,12 @@
     */
 class Rectangle : public Shape
 {
+private:
+    std::vector<float> pos;
+    std::vector<float> size;
 public:
     Rectangle(float xPos, float yPos, float xSize, float ySize, std::vector<float> colors);
+    void setPos(std::vector<float> newPos, std::vector<float> newSize);
+    std::vector<float> getPos() { return this->pos; };
+    std::vector<float> getSize() { return this->size; };
 };

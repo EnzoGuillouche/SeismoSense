@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "shader.hpp"
+#include "Shape/rectangle.hpp"
 #include "camera.hpp"
 
 constexpr float BACKGROUND_COLOR[3] = { 0.0f, 0.0f, 0.0f };
@@ -21,7 +22,8 @@ constexpr float BACKGROUND_COLOR[3] = { 0.0f, 0.0f, 0.0f };
     * @param shaderProgram OpenGL shader program ID used to render the shape.
     * @param shape Shape object containing the vertex and color data for rendering.
     */
-void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape, Camera& camera, bool staticToCamera = false) {
+void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape, Camera& camera, bool staticToCamera = false) 
+{
     glUseProgram(shaderProgram);
 
     glm::mat4 model = glm::mat4(1.0f);
@@ -42,27 +44,28 @@ void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape, Camera
     shape.draw();
 }
 
-void renderText(unsigned int shaderProgram, Text& text, float scale, glm::vec3 color) {
+void renderText(unsigned int shaderProgram, Text* text, float scale, glm::vec3 color) 
+{
     // First, we compute total width of the text
     float textWidth = 0.0f;
-    for (char c : text.getText()) {
-        Character ch = text.getCharacters()[c];
+    for (char c : text->getText()) {
+        Character ch = text->getCharacters()[c];
         textWidth += (ch.advance >> 6) * scale;
     }
 
     // Center the text horizontally at (x, y)
-    float startX = text.getPos()[0] - textWidth / 2.0f;
+    float startX = text->getPos()[0] - textWidth / 2.0f;
 
     glUseProgram(shaderProgram);
     glUniform3f(glGetUniformLocation(shaderProgram, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(text.getVAO());
+    glBindVertexArray(text->getVAO());
 
-    for (char c : text.getText()) {
-        Character ch = text.getCharacters()[c];
+    for (char c : text->getText()) {
+        Character ch = text->getCharacters()[c];
 
         float xpos = startX + ch.bearing.x * scale;
-        float ypos = text.getPos()[1] - (ch.size.y - ch.bearing.y) * scale;
+        float ypos = text->getPos()[1] - (ch.size.y - ch.bearing.y) * scale;
 
         float w = ch.size.x * scale;
         float h = ch.size.y * scale;
@@ -78,7 +81,7 @@ void renderText(unsigned int shaderProgram, Text& text, float scale, glm::vec3 c
         };
 
         glBindTexture(GL_TEXTURE_2D, ch.textureID);
-        glBindBuffer(GL_ARRAY_BUFFER, text.getVBO());
+        glBindBuffer(GL_ARRAY_BUFFER, text->getVBO());
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -87,4 +90,21 @@ void renderText(unsigned int shaderProgram, Text& text, float scale, glm::vec3 c
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void renderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned int textShaderProgram, std::vector<Shape*> shapes, Rectangle* tab, Text* tabText, Camera& camera)
+{
+    // clear screen
+    glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    for (int i = 0; i < shapes.size(); i++) {
+        render(window, shaderProgram, *shapes[i], camera, false);
+    }
+
+    render(window, shaderProgram, *tab, camera, true);
+    renderText(textShaderProgram, tabText, 0.65f, glm::vec3(1.0f, 1.0f, 1.0f));
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
