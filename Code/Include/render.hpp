@@ -11,6 +11,7 @@
 #include "shader.hpp"
 #include "Shape/rectangle.hpp"
 #include "camera.hpp"
+#include "tab.hpp"
 
 constexpr float BACKGROUND_COLOR[3] = { 0.0f, 0.0f, 0.0f };
 
@@ -44,7 +45,7 @@ void render(GLFWwindow* window, unsigned int shaderProgram, Shape& shape, Camera
     shape.draw();
 }
 
-void renderText(unsigned int shaderProgram, Text* text, float scale, glm::vec3 color) 
+void renderText(unsigned int shaderProgram, Text* text, float scale, std::vector<float> color) 
 {
     // First, we compute total width of the text
     float textWidth = 0.0f;
@@ -57,7 +58,7 @@ void renderText(unsigned int shaderProgram, Text* text, float scale, glm::vec3 c
     float startX = text->getPos()[0] - textWidth / 2.0f;
 
     glUseProgram(shaderProgram);
-    glUniform3f(glGetUniformLocation(shaderProgram, "textColor"), color.x, color.y, color.z);
+    glUniform3f(glGetUniformLocation(shaderProgram, "textColor"), color[0], color[1], color[2]);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(text->getVAO());
 
@@ -92,18 +93,22 @@ void renderText(unsigned int shaderProgram, Text* text, float scale, glm::vec3 c
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void renderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned int textShaderProgram, std::vector<Shape*> shapes, Rectangle* tab, Text* tabText, Camera& camera)
+void renderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned int textShaderProgram, std::vector<Shape*> shapes, Tab* tab, Camera& camera)
 {
     // clear screen
     glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // render simu shapes
     for (int i = 0; i < shapes.size(); i++) {
         render(window, shaderProgram, *shapes[i], camera, false);
     }
 
-    render(window, shaderProgram, *tab, camera, true);
-    renderText(textShaderProgram, tabText, 0.65f, glm::vec3(1.0f, 1.0f, 1.0f));
+    // render tab objects
+    render(window, shaderProgram, tab->tabObject, camera, true);
+    for (int i = 0; i < tab->texts.size(); i++) {
+        renderText(textShaderProgram, tab->texts[i], 0.65f, { 1.0f, 1.0f, 1.0f });
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();

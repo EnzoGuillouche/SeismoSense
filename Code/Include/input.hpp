@@ -5,6 +5,7 @@
 
 #include "Shape/shape.hpp"
 #include "camera.hpp"
+#include "tab.hpp"
 
 int moveTab = 0; // 0 = no change / 1 = open / 2 = close
 
@@ -33,7 +34,7 @@ void inputCamera(GLFWwindow *window, Camera& camera)
         camera.moveDown();
 }
 
-void inputEvent(GLFWwindow *window, Rectangle* tab)
+void inputEvent(GLFWwindow *window, Tab* tab)
 {
     static bool pKeyPressedLastFrame = false;
 
@@ -45,11 +46,11 @@ void inputEvent(GLFWwindow *window, Rectangle* tab)
 
             if (moveTab == 0)
             {
-                if (tab->getPos()[0] == SCR_WIDTH)
+                if (tab->tabObject.getPos()[0] == SCR_WIDTH)
                 {
                     moveTab = 1;
                 } 
-                else if (tab->getPos()[0] == SCR_WIDTH - 250.0f)
+                else if (tab->tabObject.getPos()[0] == SCR_WIDTH - 250.0f)
                 {
                     moveTab = 2;
                 }
@@ -62,24 +63,28 @@ void inputEvent(GLFWwindow *window, Rectangle* tab)
     }
 }
 
-void processInput(GLFWwindow* window, unsigned int shaderProgram, unsigned int textShaderProgram, std::vector<Shape*> shapes, Rectangle* tab, Text* tabText, Camera& camera)
+void processInput(GLFWwindow* window, unsigned int shaderProgram, unsigned int textShaderProgram, std::vector<Shape*> shapes, Tab* tab, Camera& camera)
 {
     // TAB
     // open tab
-    if (moveTab == 1 && tab->getPos()[0] != SCR_WIDTH-250.0f)
+    if (moveTab == 1 && tab->tabObject.getPos()[0] != SCR_WIDTH-250.0f)
     {
-        tab->setPos({tab->getPos()[0]-50, tab->getPos()[1]}, tab->getSize());
-        tabText->setPos({tabText->getPos()[0]-50, tabText->getPos()[1]});
-        renderLoop(window, shaderProgram, textShaderProgram, shapes, tab, tabText, camera); 
+        tab->tabObject.setPos({tab->tabObject.getPos()[0]-50, tab->tabObject.getPos()[1]}, tab->tabObject.getSize());
+        for (int i = 0; i < tab->texts.size(); i++) {
+            tab->texts[i]->setPos({tab->texts[i]->getPos()[0]-50, tab->texts[i]->getPos()[1]});
+        }
+        renderLoop(window, shaderProgram, textShaderProgram, shapes, tab, camera); 
     } 
     // close tab
-    else if (moveTab == 2 && tab->getPos()[0] != SCR_WIDTH)
+    else if (moveTab == 2 && tab->tabObject.getPos()[0] != SCR_WIDTH)
     {
-        tab->setPos({tab->getPos()[0]+50, tab->getPos()[1]}, tab->getSize());
-        tabText->setPos({tabText->getPos()[0]+50, tabText->getPos()[1]});
-        renderLoop(window, shaderProgram, textShaderProgram, shapes, tab, tabText, camera); 
+        tab->tabObject.setPos({tab->tabObject.getPos()[0]+50, tab->tabObject.getPos()[1]}, tab->tabObject.getSize());
+        for (int i = 0; i < tab->texts.size(); i++) {
+            tab->texts[i]->setPos({tab->texts[i]->getPos()[0]+50, tab->texts[i]->getPos()[1]});
+        }
+        renderLoop(window, shaderProgram, textShaderProgram, shapes, tab, camera); 
     } 
-    else 
+    else
     {
         moveTab = 0;
     }

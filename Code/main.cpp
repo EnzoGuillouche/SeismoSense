@@ -13,6 +13,7 @@ const unsigned int SCR_HEIGHT = 600;
 #include "Include/shader.hpp"
 #include "Include/camera.hpp"
 #include "Include/character.hpp"
+#include "Include/tab.hpp"
 #include "Include/render.hpp"
 #include "Include/input.hpp"
 
@@ -104,10 +105,13 @@ int main()
 
     Camera camera;
 
-    // tab
-    Rectangle* tab = new Rectangle(SCR_WIDTH-250.0f, 0, 250.0f, SCR_HEIGHT, { 0, 0, 1.0f });
-    // create text for tab
-    Text* tabText = new Text("Simulation", { SCR_WIDTH/6.0f*5+8, SCR_HEIGHT-50 }, textVAO, textVBO);
+    // tab object
+    Rectangle tabObj(SCR_WIDTH-250.0f, 0, 250.0f, SCR_HEIGHT, { 0, 0, 1.0f });
+    Tab* tab = new Tab(tabObj);
+    tab->texts.push_back(new Text("Simulation", { SCR_WIDTH-125.0f, SCR_HEIGHT-50 }, textVAO, textVBO));
+    tab->texts.push_back(new Text("Magnitude", { SCR_WIDTH-125.0f, SCR_HEIGHT-125 }, textVAO, textVBO));
+    tab->texts.push_back(new Text("Duration", { SCR_WIDTH-125.0f, SCR_HEIGHT-150 }, textVAO, textVBO));
+    tab->texts.push_back(new Text("Depth", { SCR_WIDTH-125.0f, SCR_HEIGHT-175 }, textVAO, textVBO));
 
     // simulation shapes
     std::vector<Shape*> shapes;
@@ -137,9 +141,9 @@ int main()
     {
         inputCamera(window, camera);
         inputEvent(window, tab);
-        processInput(window, shaderProgram, textShaderProgram, shapes, tab, tabText, camera);
+        processInput(window, shaderProgram, textShaderProgram, shapes, tab, camera);
 
-        renderLoop(window, shaderProgram, textShaderProgram, shapes, tab, tabText, camera);
+        renderLoop(window, shaderProgram, textShaderProgram, shapes, tab, camera);
     }
 
     glDeleteVertexArrays(1, &VAO);
