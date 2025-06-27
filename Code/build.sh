@@ -40,7 +40,7 @@ fi
 
 # Compilation command
 echo "Compiling the program..."
-g++ main.cpp Include/character.cpp Include/Shape/shape.cpp Include/Shape/rectangle.cpp Include/Shape/triangle.cpp Include/Shape/square.cpp Include/Shape/pyramid.cpp Include/Shape/cube.cpp -std=c++17 \
+g++ main.cpp Include/character.cpp Include/earthquake.cpp Include/Shape/shape.cpp Include/Shape/rectangle.cpp Include/Shape/triangle.cpp Include/Shape/square.cpp Include/Shape/pyramid.cpp Include/Shape/cube.cpp -std=c++17 \
     -framework OpenGL -lglfw \
     -I/opt/homebrew/include \
     -I/opt/homebrew/include/freetype2 \

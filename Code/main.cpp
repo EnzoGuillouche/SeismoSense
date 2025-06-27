@@ -10,12 +10,14 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+#include "Include/convertion.hpp"
 #include "Include/shader.hpp"
 #include "Include/camera.hpp"
 #include "Include/character.hpp"
 #include "Include/tab.hpp"
 #include "Include/render.hpp"
 #include "Include/input.hpp"
+#include "Include/earthquake.hpp"
 
 #include "Include/Shape/shape.hpp"
 #include "Include/Shape/rectangle.hpp"
@@ -110,8 +112,9 @@ int main()
     Tab* tab = new Tab(tabObj);
     tab->texts.push_back(new Text("Simulation", { SCR_WIDTH-125.0f, SCR_HEIGHT-50 }, textVAO, textVBO));
     tab->texts.push_back(new Text("Magnitude", { SCR_WIDTH-125.0f, SCR_HEIGHT-125 }, textVAO, textVBO));
-    tab->texts.push_back(new Text("Duration", { SCR_WIDTH-125.0f, SCR_HEIGHT-150 }, textVAO, textVBO));
-    tab->texts.push_back(new Text("Depth", { SCR_WIDTH-125.0f, SCR_HEIGHT-175 }, textVAO, textVBO));
+    tab->texts.push_back(new Text("Epicenter", { SCR_WIDTH-125.0f, SCR_HEIGHT-225 }, textVAO, textVBO));
+    tab->texts.push_back(new Text("Depth", { SCR_WIDTH-125.0f, SCR_HEIGHT-325 }, textVAO, textVBO));
+    tab->texts.push_back(new Text("Duration", { SCR_WIDTH-125.0f, SCR_HEIGHT-425 }, textVAO, textVBO));
 
     // simulation shapes
     std::vector<Shape*> shapes;
@@ -133,6 +136,14 @@ int main()
         
         yOffset+=0.5f;
     }
+
+    // earthquake
+    Earthquake* currentQuake = new Earthquake(7.0f, { 3.2f, 0.4f }, 3.1f, 15.0f);
+            
+    tab->texts.push_back(new Text(floatToString(currentQuake->getMagnitude()), { SCR_WIDTH-125.0f, SCR_HEIGHT-175 }, textVAO, textVBO)); // magnitude
+    tab->texts.push_back(new Text(floatToString(currentQuake->getEpicenter()[0]) + "km - " + floatToString(currentQuake->getEpicenter()[1]) + "km", { SCR_WIDTH-125.0f, SCR_HEIGHT-275 }, textVAO, textVBO)); // epicenter
+    tab->texts.push_back(new Text(floatToString(currentQuake->getDepth()) + "km", { SCR_WIDTH-125.0f, SCR_HEIGHT-375 }, textVAO, textVBO)); // depth
+    tab->texts.push_back(new Text(floatToString(currentQuake->getDuration()) + "s", { SCR_WIDTH-125.0f, SCR_HEIGHT-475 }, textVAO, textVBO)); // duration
 
     std::cout << "Initialization complete." << std::endl;
 
